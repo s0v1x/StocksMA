@@ -87,10 +87,28 @@ def get_companies():
         "Zellidja": "ZDJ",
     }
     for c in companies:
-        print(c, companies[c])
+        print(c, '/', companies[c])
 
+today = datetime.now()
+one_year_from_now = today - relativedelta(years=1)
 
-def get_data(ticker, start_date, end_date):
+def get_data_ticker(ticker, start_date, end_date):
+  url = "https://www.marketwatch.com/investing/stock/{ticker}/download-data?startDate={s_date}&endDate={e_date}&countryCode=ma".format(
+        ticker=ticker, s_date=start_date, e_date=end_date
+  )
+  r = requests.get(url)
+  soup = BeautifulSoup(r.content, "html.parser")
+  url_data = soup.find("a", class_="link link--csv m100")["href"]
+  data = requests.get(url_data)
+  df = pd.read_csv(StringIO(data.text), sep=",", index_col=[0])
+  df = df[end_date:start_date]
+  for cl in df.columns:
+      df[cl] = df[cl].apply(convert_obj)
+  df.set_index(pd.MultiIndex.from_product([[ticker], df.index], names=['Symbol', 'Date']), inplace=True)
+
+  return df
+
+def get_data(tickers, start_date=one_year_from_now, end_date=today):
 
     today = datetime.now()
     one_year_from_now = today - relativedelta(years=1)
@@ -102,17 +120,12 @@ def get_data(ticker, start_date, end_date):
     if datetime.strptime(start_date, "%m/%d/%Y") < one_year_from_now:
         raise ValueError("start_date is limited to a maximum of one year")
 
-    url = "https://www.marketwatch.com/investing/stock/{ticker}/download-data?startDate={s_date}&endDate={e_date}&countryCode=ma".format(
-        ticker=ticker, s_date=start_date, e_date=end_date
-    )
-
-    r = requests.get(url)
-    soup = BeautifulSoup(r.content, "html.parser")
-    url_data = soup.find("a", class_="link link--csv m100")["href"]
-    data = requests.get(url_data)
-    df = pd.read_csv(StringIO(data.text), sep=",", index_col=[0])
-    df = df[end_date:start_date]
-    for cl in df.columns:
-        df[cl] = df[cl].apply(convert_obj)
-
-    return df
+    if isinstance(tickers, list):
+      dataframes = []
+      for t in tickers:
+        dataframes.append(get_data_ticker(t, start_date, end_date))
+      df = pd.concat(dataframes, sort=True)
+      return df
+    
+    else:
+      return get_data_ticker(tickers, start_date, end_date)
