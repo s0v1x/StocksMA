@@ -1,2 +1,5 @@
 def convert_obj(obj):
-  return float(obj.replace('..', '').replace(',', ''))
+  try:
+    return float(obj.replace('..', '').replace(',', ''))
+  except AttributeError:
+    return float(obj)

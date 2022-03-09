@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from utils import convert_obj
 
 
-def get_companies():
+def get_tickers():
     companies = {
         "Addoha": "ADH",
         "AFMA": "AFM",
@@ -104,14 +104,11 @@ def get_data_ticker(ticker, start_date, end_date):
   df = df[end_date:start_date]
   for cl in df.columns:
       df[cl] = df[cl].apply(convert_obj)
-  df.set_index(pd.MultiIndex.from_product([[ticker], df.index], names=['Symbol', 'Date']), inplace=True)
+  df.set_index(pd.MultiIndex.from_product([[ticker.upper()], df.index], names=['Symbol', 'Date']), inplace=True)
 
   return df
 
 def get_data(tickers, start_date=one_year_from_now, end_date=today):
-
-    today = datetime.now()
-    one_year_from_now = today - relativedelta(years=1)
 
     if datetime.strptime(end_date, "%m/%d/%Y") > today:
         raise ValueError(
