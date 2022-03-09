@@ -6,86 +6,83 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from utils import convert_obj
 
+companies = {'ADH': 'Addoha',
+ 'ADI': 'Alliances',
+ 'AFI': 'Afric Indus.',
+ 'AFM': 'AFMA',
+ 'AGM': 'Agma',
+ 'ALM': 'Aluminium Maroc',
+ 'ARD': 'Aradei Capital',
+ 'ATH': 'AutoHall',
+ 'ATL': 'ATLANTASANAD',
+ 'ATW': 'AttijariwafaBk',
+ 'BAL': 'BALIMA',
+ 'BCI': 'BMCI',
+ 'BCP': 'BCP',
+ 'BOA': 'BANK OF AFRICA',
+ 'CDA': 'Central Danone',
+ 'CDM': 'CDM',
+ 'CIH': 'CIH',
+ 'CMA': 'Ciments Maroc',
+ 'CMT': 'CMT',
+ 'COL': 'Colorado',
+ 'CRS': 'Cartier Saada',
+ 'CSR': 'COSUMAR',
+ 'CTM': 'CTM',
+ 'DHO': 'DeltaHolding',
+ 'DIS': 'DiacSalaf',
+ 'DLM': 'DelattreLev.',
+ 'DRI': 'Dari Couspate',
+ 'DWY': 'DISWAY',
+ 'EQD': 'EQDOM',
+ 'FBR': 'FENIE BROSSETTE',
+ 'GAZ': 'Afriquia Gaz',
+ 'HPS': 'HPS',
+ 'IAM': 'Maroc Telecom',
+ 'IBC': 'IBMaroc.com',
+ 'IMO': 'Immr Invest Br',
+ 'INV': 'INVOLYS',
+ 'JET': 'Jet Contractors',
+ 'LBV': 'LABEL VIE',
+ 'LES': 'Lesieur Cristal',
+ 'LHM': 'Lafarge Holcim',
+ 'LYD': 'Lydec',
+ 'M2M': 'M2M Group',
+ 'MAB': 'Maghrebail',
+ 'MDP': 'MED PAPER',
+ 'MIC': 'MICRODATA',
+ 'MLE': 'Maroc Leasing',
+ 'MNG': 'Managem',
+ 'MOX': 'Maghreb Oxygene',
+ 'MSA': 'SODEP-MarsaMaroc',
+ 'MUT': 'MUTANDIS',
+ 'NEJ': 'Auto Nejma',
+ 'NEX': 'Nexans Maroc',
+ 'NKL': 'EnnaklN',
+ 'OUL': 'Oulmes',
+ 'PRO': 'PROMOPHARM',
+ 'RDS': 'Res. Dar Saada',
+ 'REB': 'Rebab Company',
+ 'RIS': 'Risma',
+ 'S2M': 'S2M',
+ 'SAH': 'Saham Assurance',
+ 'SAM': 'SAMIR',
+ 'SBM': 'Stokvis Nord Afr.',
+ 'SID': 'Sonasid',
+ 'SLF': 'SALAFIN',
+ 'SMI': 'SMI',
+ 'SNA': 'SNEP',
+ 'SNP': 'REALISATIONS MECANIQUES',
+ 'SOT': 'SOTHEMA',
+ 'SRM': 'Ste Boissons Maroc',
+ 'STR': 'STROC Indus.',
+ 'TIM': 'Timar',
+ 'TMA': 'TotalMaroc',
+ 'TQM': 'TAQA Morocco',
+ 'UMR': 'Unimer',
+ 'WAA': 'WAFA ASSURANCE'}
 
 def get_tickers():
-    companies = {
-        "Addoha": "ADH",
-        "AFMA": "AFM",
-        "Afric Indus.": "AFI",
-        "Afriquia Gaz": "GAZ",
-        "Agma": "AGM",
-        "Alliances": "ADI",
-        "Aluminium Maroc": "ALM",
-        "Aradei Capital": "ARD",
-        "ATLANTASANAD": "ATL",
-        "AttijariwafaBk": "ATW",
-        "AutoHall": "ATH",
-        "Auto Nejma": "NEJ",
-        "BALIMA": "BAL",
-        "BANK OF AFRICA": "BOA",
-        "BCP": "BCP",
-        "BMCI": "BCI",
-        "Cartier Saada": "CRS",
-        "CDM": "CDM",
-        "Central Danone": "CDA",
-        "CIH": "CIH",
-        "Ciments Maroc": "CMA",
-        "CMT": "CMT",
-        "Colorado": "COL",
-        "COSUMAR": "CSR",
-        "CTM": "CTM",
-        "Dari Couspate": "DRI",
-        "DelattreLev.": "DLM",
-        "DeltaHolding": "DHO",
-        "DiacSalaf": "DIS",
-        "DISWAY": "DWY",
-        "EnnaklN": "NKL",
-        "EQDOM": "EQD",
-        "FENIE BROSSETTE": "FBR",
-        "HPS": "HPS",
-        "IBMaroc.com": "IBC",
-        "Immr Invest Br": "IMO",
-        "INVOLYS": "INV",
-        "Jet Contractors": "JET",
-        "LABEL VIE": "LBV",
-        "Lafarge Holcim": "LHM",
-        "Lesieur Cristal": "LES",
-        "Lydec": "LYD",
-        "M2M Group": "M2M",
-        "Maghreb Oxygene": "MOX",
-        "Maghrebail": "MAB",
-        "Managem": "MNG",
-        "Maroc Leasing": "MLE",
-        "Maroc Telecom": "IAM",
-        "MED PAPER": "MDP",
-        "MICRODATA": "MIC",
-        "MUTANDIS": "MUT",
-        "Nexans Maroc": "NEX",
-        "Oulmes": "OUL",
-        "PROMOPHARM": "PRO",
-        "Rebab Company": "REB",
-        "Res. Dar Saada": "RDS",
-        "Risma": "RISMA",
-        "S2M": "S2M",
-        "Saham Assurance": "SAH",
-        "SALAFIN": "SLF",
-        "SAMIR": "SAM",
-        "SMI": "SMI",
-        "SNEP": "SNA",
-        "REALISATIONS MECANIQUES": "SNP",
-        "SODEP-MarsaMaroc": "MSA",
-        "Sonasid": "SID",
-        "SOTHEMA": "SOT",
-        "Ste Boissons Maroc": "SRM",
-        "Stokvis Nord Afr.": "SBM",
-        "STROC Indus.": "STR",
-        "TAQA Morocco": "TQM",
-        "Timar": "TIM",
-        "TotalMaroc": "TMA",
-        "Unimer": "UMR",
-        "WAFA ASSURANCE": "WAA",
-        "Zellidja": "ZDJ",
-    }
     for c in companies:
         print(c, '/', companies[c])
 
@@ -104,11 +101,15 @@ def get_data_ticker(ticker, start_date, end_date):
   df = df[end_date:start_date]
   for cl in df.columns:
       df[cl] = df[cl].apply(convert_obj)
-  df.set_index(pd.MultiIndex.from_product([[ticker.upper()], df.index], names=['Symbol', 'Date']), inplace=True)
+  df.set_index(pd.MultiIndex.from_product([[ticker], df.index], names=['Symbol', 'Date']), inplace=True)
 
   return df
 
-def get_data(tickers, start_date=one_year_from_now, end_date=today):
+
+def get_data(tickers, start_date, end_date=datetime.now()):
+
+    today = datetime.now()
+    one_year_from_now = today - relativedelta(years=1)
 
     if datetime.strptime(end_date, "%m/%d/%Y") > today:
         raise ValueError(
@@ -118,11 +119,20 @@ def get_data(tickers, start_date=one_year_from_now, end_date=today):
         raise ValueError("start_date is limited to a maximum of one year")
 
     if isinstance(tickers, list):
+      tickers = [x.upper() for x in tickers]
       dataframes = []
       for t in tickers:
-        dataframes.append(get_data_ticker(t, start_date, end_date))
+        if t in companies:
+          dataframes.append(get_data_ticker(t, start_date, end_date))
+        else:
+          raise ValueError("Ticker {ticker} is unknown".format(ticker=t))
       df = pd.concat(dataframes, sort=True)
       return df
     
     else:
-      return get_data_ticker(tickers, start_date, end_date)
+      tickers = tickers.upper()
+      if tickers in companies:
+        return get_data_ticker(tickers, start_date, end_date)
+      else:
+        raise ValueError("Ticker {ticker} is unknown".format(ticker=tickers))
+
