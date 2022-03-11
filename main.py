@@ -82,6 +82,21 @@ companies = {'ADH': 'Addoha',
  'UMR': 'Unimer',
  'WAA': 'WAFA ASSURANCE'}
 
+
+def get_isin(company):
+  url = "https://www.leboursier.ma/api?method=searchStock&format=json&search="+str(company)
+  r = requests.get(url)
+  #r.encoding='utf-8-sig'
+  result = json.loads(r.content)['result']
+  l_result = len(result)
+  if l_result == 0:
+    raise ValueError("Company {company} cannot be found".format(company=str(company)))
+  elif l_result > 1:
+    names = [n['name'] for n in result]
+    raise Exception("Found severale companies with the same name {company} \n {res}".format(company='llll', res=names))
+  else :
+    return result[0]['name'],result[0]['isin']
+    
 def get_tickers():
     for c in companies:
         print(c, '/', companies[c])
