@@ -89,20 +89,26 @@ def get_tickers():
 
 
 def get_isin(company):
-    if not company:
+    if not str(company):
         raise Exception("Company must be defined not empty")
+
     url = "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + str(
         company
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": rand_agent("user-agents.txt")}
     r = requests.get(url, headers=headers)
     # r.encoding='utf-8-sig'
     result = json.loads(r.content)["result"]
     l_result = len(result)
+
     if l_result == 0:
-        raise Exception(
-            "Company {company} cannot be found".format(company=str(company))
-        )
+        if company.upper() in companies.keys():
+            return get_isin(companies[company.upper()])
+        else:
+            raise Exception(
+                "Company {company} cannot be found".format(company=str(company))
+            )
+
     elif l_result > 1:
         names = [n["name"] for n in result]
         if company in names:
