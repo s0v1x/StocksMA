@@ -170,3 +170,38 @@ def get_data(tickers, start_date, end_date=datetime.now()):
         return df
     else:
         return get_data_stock(tickers, start_date, end_date)
+
+
+def get_info(company):
+    _NAME, _ISIN = get_isin(str(company))
+    url = (
+        "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
+        + _ISIN
+        + "&format=json"
+    )
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+
+    request_data = requests.get(url, headers=headers)
+    data = json.loads(request_data.content)["result"]
+    data = pd.DataFrame(data.items()).T
+    cols = [
+        "Name",
+        "Name_2",
+        "ISIN",
+        "Number of Shares",
+        "Close",
+        "Previous Close",
+        "Market Cap",
+        "Quotation Datetime",
+        "Change",
+        "Volume Change",
+        "Volume in Shares",
+        "Volume",
+        "Open",
+        "Low",
+        "High",
+    ]
+    data.columns = cols
+    data.drop(data.index[0], inplace=True)
+
+    return data
