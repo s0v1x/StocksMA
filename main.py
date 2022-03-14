@@ -100,7 +100,7 @@ def get_data(tickers, start_date, end_date=datetime.now()):
 
 
 def get_info(company):
-    _NAME, _ISIN = get_isin(str(company))
+    _, _ISIN = get_isin(str(company))
     url = (
         "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
         + _ISIN
@@ -136,7 +136,7 @@ def get_info(company):
 
 def get_data_intraday(company):
 
-    _NAME, _ISIN = get_isin(str(company))
+    _, _ISIN = get_isin(str(company))
     _DATE = (
         get_info(_ISIN)["Quotation Datetime"].to_string(index=False).replace("à", "")
     )
@@ -158,5 +158,18 @@ def get_data_intraday(company):
         )
     ).rename("Datetime")
     data.drop("labels", axis=1, inplace=True)
+
+    return data
+
+
+def get_ask_bid(company):
+    _, _ISIN = get_isin(str(company))
+    url = (
+        "https://www.leboursier.ma/api?method=getBidAsk&ISIN=" + _ISIN + "&format=json"
+    )
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    data = json.loads(request_data.content)["result"]["orderBook"]
+    data = pd.DataFrame(data)
 
     return data
