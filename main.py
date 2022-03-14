@@ -4,6 +4,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import utils
 import json
+from bs4 import BeautifulSoup
 
 
 today = datetime.now()
@@ -171,5 +172,56 @@ def get_ask_bid(company):
     request_data = requests.get(url, headers=headers)
     data = json.loads(request_data.content)["result"]["orderBook"]
     data = pd.DataFrame(data)
+
+    return data
+
+
+def get_balance_sheet(company, period="annual"):
+
+    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
+        raise Exception(
+            "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
+    if period == "annual":
+        url = (
+            "https://www.marketwatch.com/investing/stock/"
+            + company
+            + "/financials/balance-sheet?countrycode=ma"
+        )
+        cols = ["Item Item", "5-year trend"]
+    elif period == "quarter":
+        url = (
+            "https://www.marketwatch.com/investing/stock/"
+            + company
+            + "/financials/balance-sheet/quarter?countrycode=ma"
+        )
+        cols = ["Item Item", "5- qtr trend"]
+    else:
+        raise Exception("period should be annual or quarter")
+
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+
+    data = soup.find_all("table", {"class": "table table--overflow align--right"})
+
+    tab1 = pd.read_html(str(data))[0]
+    tab2 = pd.read_html(str(data))[1]
+    tab1["Item Item"] = tab1["Item Item"].apply(utils.remove_duplicates)
+    tab2["Item Item"] = tab2["Item Item"].apply(utils.remove_duplicates)
+    tab1.set_index(
+        pd.MultiIndex.from_product([["Assets"], tab1["Item Item"]], names=["", "Item"]),
+        inplace=True,
+    )
+    tab1.drop(cols, axis=1, inplace=True)
+    tab2.set_index(
+        pd.MultiIndex.from_product(
+            [["Liabilities & Shareholders' Equity"], tab2["Item Item"]],
+            names=["", "Item"],
+        ),
+        inplace=True,
+    )
+    tab2.drop(cols, axis=1, inplace=True)
+    data = pd.concat([tab1, tab2], sort=True)
 
     return data
