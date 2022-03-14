@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 import utils
 import json
 from bs4 import BeautifulSoup
-
+import numpy as np
 
 today = datetime.now()
 one_year_from_now = today - relativedelta(years=1)
@@ -309,5 +309,30 @@ def get_cash_flow(company, period="annual"):
         dataframes.append(tab)
 
     data = pd.concat(dataframes)
+
+    return data
+
+
+def get_quote_table(company):
+
+    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
+        raise Exception(
+            "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
+
+    url = "https://www.marketwatch.com/investing/stock/" + company + "?countrycode=ma"
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+    data = soup.find_all("li", {"class": "kv__item"})
+    dataframe = {"Key Data": [], "Value": []}
+    for li in data:
+        dataframe["Key Data"].append(li.find("small", {"class": "label"}).contents[0])
+        content = li.find("span", {"class": "primary "})
+        if content is None:
+            dataframe["Value"].append(np.nan)
+        else:
+            dataframe["Value"].append(content.contents[0].replace("د.م.", ""))
+    data = pd.DataFrame(dataframe)
 
     return data
