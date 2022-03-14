@@ -263,3 +263,51 @@ def get_income_statement(company, period="annual"):
     data.index.rename("Item", inplace=True)
 
     return data
+
+
+def get_cash_flow(company, period="annual"):
+
+    if not isinstance(company, str) or not company.upper() in companies.keys():
+        raise Exception(
+            "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
+    if period == "annual":
+        url = (
+            "https://www.marketwatch.com/investing/stock/"
+            + company
+            + "/financials/cash-flow?countrycode=ma"
+        )
+        cols = ["Item Item", "5-year trend"]
+    elif period == "quarter":
+        url = (
+            "https://www.marketwatch.com/investing/stock/"
+            + company
+            + "/financials/cash-flow/quarter?countrycode=ma"
+        )
+        cols = ["Item Item", "5- qtr trend"]
+    else:
+        raise Exception("period should be annual or quarter")
+
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+
+    data = soup.find_all("table", {"class": "table table--overflow align--right"})
+    data = pd.read_html(str(data))
+    activ = ["Operating Activities", "Investing Activities", "Financing Activities"]
+    dataframes = []
+    for i in range(3):
+        tab = data[i]
+        tab["Item Item"] = tab["Item Item"].apply(utils.remove_duplicates)
+        tab.set_index(
+            pd.MultiIndex.from_product(
+                [[activ[i]], tab["Item Item"]], names=["", "Item"]
+            ),
+            inplace=True,
+        )
+        tab.drop(cols, axis=1, inplace=True)
+        dataframes.append(tab)
+
+    data = pd.concat(dataframes)
+
+    return data
