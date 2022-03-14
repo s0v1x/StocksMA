@@ -225,3 +225,41 @@ def get_balance_sheet(company, period="annual"):
     data = pd.concat([tab1, tab2], sort=True)
 
     return data
+
+
+def get_income_statement(company, period="annual"):
+
+    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
+        raise Exception(
+            "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
+    if period == "annual":
+        url = (
+            "https://www.marketwatch.com/investing/stock/"
+            + company
+            + "/financials/income?countrycode=ma"
+        )
+        cols = ["5-year trend"]
+    elif period == "quarter":
+        url = (
+            "https://www.marketwatch.com/investing/stock/"
+            + company
+            + "/financials/income/quarter?countrycode=ma"
+        )
+        cols = ["5- qtr trend"]
+    else:
+        raise Exception("period should be annual or quarter")
+
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+
+    data = soup.find_all("table", {"class": "table table--overflow align--right"})
+
+    data = pd.read_html(str(data))[0]
+    data["Item Item"] = data["Item Item"].apply(utils.remove_duplicates)
+    data.set_index("Item Item", inplace=True)
+    data.drop(cols, axis=1, inplace=True)
+    data.index.rename("Item", inplace=True)
+
+    return data
