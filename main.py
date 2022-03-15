@@ -349,3 +349,28 @@ def get_market_status():
     data = data[0].contents[0]
 
     return data
+
+
+def get_company_officers(company):
+    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
+        raise Exception(
+            "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
+
+    url = (
+        "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
+    )
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+    data = soup.find_all("ul", {"class": "cr_data_collection cr_all_executives"})
+    dataframe = {"Name": [], "Role": []}
+    for i in data:
+        div = i.find_all("div", {"class": "cr_data_field"})
+        for tag in div:
+            dataframe["Name"].append(tag.find("a").contents[0])
+            dataframe["Role"].append(
+                tag.find("span", {"class": "data_lbl"}).contents[0]
+            )
+    data = pd.DataFrame(dataframe)
+    return data
