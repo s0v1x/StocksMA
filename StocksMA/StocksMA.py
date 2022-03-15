@@ -185,7 +185,7 @@ def get_ask_bid(company):
 
 def get_balance_sheet(company, period="annual"):
 
-    utils.company_check(company)
+    utils.check_company(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
