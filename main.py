@@ -101,7 +101,7 @@ def get_data(tickers, start_date, end_date=datetime.now()):
         return get_data_stock(tickers, start_date, end_date)
 
 
-def get_info(company):
+def get_quick_info(company):
     _, _ISIN = get_isin(str(company))
     url = (
         "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
@@ -140,7 +140,9 @@ def get_data_intraday(company):
 
     _, _ISIN = get_isin(str(company))
     _DATE = (
-        get_info(_ISIN)["Quotation Datetime"].to_string(index=False).replace("à", "")
+        get_quick_info(_ISIN)["Quotation Datetime"]
+        .to_string(index=False)
+        .replace("à", "")
     )
     url = (
         "https://www.leboursier.ma/api?method=getStockIntraday&ISIN="
@@ -374,3 +376,42 @@ def get_company_officers(company):
             )
     data = pd.DataFrame(dataframe)
     return data
+
+
+def get_company_info(company):
+
+    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
+        raise Exception(
+            "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
+
+    url = (
+        "https://www.marketwatch.com/investing/stock/"
+        + company
+        + "/company-profile?countrycode=ma"
+    )
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+    dataframe = {
+        "Item": ["Name", "Adresse", "Phone", "Industry", "Sector", "Description"],
+        "Value": [],
+    }
+
+    dataframe["Value"].append(soup.find("h4", {"class": "heading"}).contents[0])
+    div_addr = soup.find_all("div", {"class": "address__line"})
+    dataframe["Value"].append(" ".join([x.contents[0] for x in div_addr]))
+    dataframe["Value"].append(
+        "+"
+        + soup.find("div", {"class": "phone"})
+        .find("span", {"class": "text"})
+        .contents[0]
+    )
+    div = soup.find_all("li", {"class": "kv__item w100"})
+    dataframe["Value"].append(div[0].find("span", {"class": "primary "}).contents[0])
+    dataframe["Value"].append(div[1].find("span", {"class": "primary "}).contents[0])
+    dataframe["Value"].append(
+        soup.find("p", {"class": "description__text"}).contents[0]
+    )
+
+    return pd.DataFrame(dataframe)
