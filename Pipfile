@@ -9,6 +9,7 @@ pandas = "*"
 requests = "*"
 beautifulsoup4 = "*"
 pytest = "*"
+lxml = "*"
 
 [dev-packages]
 

@@ -12,6 +12,7 @@ certifi==2021.10.8
 charset-normalizer==2.0.12; python_version >= '3'
 idna==3.3; python_version >= '3'
 iniconfig==1.1.1
+lxml==4.8.0
 numpy==1.22.3
 packaging==21.3; python_version >= '3.6'
 pandas==1.4.1
