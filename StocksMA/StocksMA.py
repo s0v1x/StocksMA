@@ -101,7 +101,7 @@ def get_data(tickers, start_date, end_date=datetime.now()):
 
 def get_quick_info(company):
 
-    pattern = re.compile("^(MA00000)\d+$")
+    pattern = re.compile(r'^(MA00000)\d+$')
     if not pattern.match(company):
         _NAME, _ISIN = get_isin(str(company))
     else:
