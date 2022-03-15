@@ -6,6 +6,7 @@ import utils
 import json
 from bs4 import BeautifulSoup
 import numpy as np
+import re
 
 today = datetime.now()
 one_year_from_now = today - relativedelta(years=1)
@@ -334,5 +335,17 @@ def get_quote_table(company):
         else:
             dataframe["Value"].append(content.contents[0].replace("د.م.", ""))
     data = pd.DataFrame(dataframe)
+
+    return data
+
+
+def get_market_status():
+
+    url = "https://www.marketwatch.com/investing/stock/iam?countryCode=ma"
+    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request_data.text, "lxml")
+    data = soup.find_all("div", {"class": "status"})
+    data = data[0].contents[0]
 
     return data
