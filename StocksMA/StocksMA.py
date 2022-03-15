@@ -6,11 +6,13 @@ import StocksMA.utils as utils
 import json
 from bs4 import BeautifulSoup
 import numpy as np
+import re
 
 
 def get_tickers():
     for c in utils.companies:
         print(c, "/", utils.companies[c])
+
 
 def get_isin(company):
 
@@ -99,7 +101,11 @@ def get_data(tickers, start_date, end_date=datetime.now()):
 
 def get_quick_info(company):
 
-    _, _ISIN = get_isin(str(company))
+    pattern = re.compile("^(MA00000)\d+$")
+    if not pattern.match(company):
+        _NAME, _ISIN = get_isin(str(company))
+    else:
+        _ISIN = company
     url = (
         "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
         + _ISIN
@@ -326,7 +332,6 @@ def get_quote_table(company):
     return pd.DataFrame(dataframe)
 
 
-
 def get_market_status():
 
     url = "https://www.marketwatch.com/investing/stock/iam?countryCode=ma"
@@ -360,6 +365,7 @@ def get_company_officers(company):
             )
 
     return pd.DataFrame(dataframe)
+
 
 def get_company_info(company):
 
