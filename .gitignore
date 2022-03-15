@@ -1,3 +1,4 @@
 Pipfile
 Pipfile.lock
-test.py
+tests
+.pytest_cache

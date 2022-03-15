@@ -2,11 +2,10 @@ import requests
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import utils
+import StocksMA.utils as utils
 import json
 from bs4 import BeautifulSoup
 import numpy as np
-import re
 
 today = datetime.now()
 one_year_from_now = today - relativedelta(years=1)
@@ -16,8 +15,8 @@ def get_tickers():
     for c in utils.companies:
         print(c, "/", utils.companies[c])
 
-
 def get_isin(company):
+
     if not str(company):
         raise Exception("Company must be defined not empty")
 
@@ -102,6 +101,7 @@ def get_data(tickers, start_date, end_date=datetime.now()):
 
 
 def get_quick_info(company):
+
     _, _ISIN = get_isin(str(company))
     url = (
         "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
@@ -167,6 +167,7 @@ def get_data_intraday(company):
 
 
 def get_ask_bid(company):
+
     _, _ISIN = get_isin(str(company))
     url = (
         "https://www.leboursier.ma/api?method=getBidAsk&ISIN=" + _ISIN + "&format=json"
@@ -181,10 +182,7 @@ def get_ask_bid(company):
 
 def get_balance_sheet(company, period="annual"):
 
-    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
-        raise Exception(
-            "Ticker {company} is not found, use get_companies()".format(company=company)
-        )
+    utils.company_check(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -232,10 +230,7 @@ def get_balance_sheet(company, period="annual"):
 
 def get_income_statement(company, period="annual"):
 
-    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
-        raise Exception(
-            "Ticker {company} is not found, use get_companies()".format(company=company)
-        )
+    utils.check_company(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -270,10 +265,7 @@ def get_income_statement(company, period="annual"):
 
 def get_cash_flow(company, period="annual"):
 
-    if not isinstance(company, str) or not company.upper() in companies.keys():
-        raise Exception(
-            "Ticker {company} is not found, use get_companies()".format(company=company)
-        )
+    utils.check_company(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -318,10 +310,7 @@ def get_cash_flow(company, period="annual"):
 
 def get_quote_table(company):
 
-    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
-        raise Exception(
-            "Ticker {company} is not found, use get_companies()".format(company=company)
-        )
+    utils.check_company(company)
 
     url = "https://www.marketwatch.com/investing/stock/" + company + "?countrycode=ma"
     headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
@@ -336,9 +325,9 @@ def get_quote_table(company):
             dataframe["Value"].append(np.nan)
         else:
             dataframe["Value"].append(content.contents[0].replace("د.م.", ""))
-    data = pd.DataFrame(dataframe)
 
-    return data
+    return pd.DataFrame(dataframe)
+
 
 
 def get_market_status():
@@ -354,10 +343,8 @@ def get_market_status():
 
 
 def get_company_officers(company):
-    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
-        raise Exception(
-            "Ticker {company} is not found, use get_companies()".format(company=company)
-        )
+
+    utils.check_company(company)
 
     url = (
         "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
@@ -374,16 +361,12 @@ def get_company_officers(company):
             dataframe["Role"].append(
                 tag.find("span", {"class": "data_lbl"}).contents[0]
             )
-    data = pd.DataFrame(dataframe)
-    return data
 
+    return pd.DataFrame(dataframe)
 
 def get_company_info(company):
 
-    if not isinstance(company, str) or not company.upper() in utils.companies.keys():
-        raise Exception(
-            "Ticker {company} is not found, use get_companies()".format(company=company)
-        )
+    utils.check_company(company)
 
     url = (
         "https://www.marketwatch.com/investing/stock/"

@@ -72,19 +72,16 @@ companies = {
     "ZDJ": "Zellidja S.A.",
 }
 
-
-def convert_obj(obj):
-    try:
-        return float(obj.replace("..", "").replace(",", ""))
-    except AttributeError:
-        return float(obj)
-
-
 def rand_agent(fname):
     lines = open(fname).read().splitlines()
     return random.choice(lines)
 
-
 def remove_duplicates(string):
     words = string.split()
     return " ".join(sorted(set(words), key=words.index))
+
+def check_company(company):
+    if not isinstance(company, str) or not company.upper() in companies.keys():
+            raise Exception(
+                "Ticker {company} is not found, use get_companies()".format(company=company)
+        )
