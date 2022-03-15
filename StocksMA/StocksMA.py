@@ -23,7 +23,7 @@ def get_isin(company):
     url = "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + str(
         company
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     r = requests.get(url, headers=headers)
     # r.encoding='utf-8-sig'
     result = json.loads(r.content)["result"]
@@ -59,7 +59,7 @@ def get_data_stock(company, start_date, end_date):
         + _ISIN
         + "&format=json"
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     data = json.loads(request_data.content)
     data = pd.DataFrame(
@@ -108,7 +108,7 @@ def get_quick_info(company):
         + _ISIN
         + "&format=json"
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
 
     request_data = requests.get(url, headers=headers)
     data = json.loads(request_data.content)["result"]
@@ -149,7 +149,7 @@ def get_data_intraday(company):
         + _ISIN
         + "&format=json"
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     data = json.loads(request_data.content)["result"][0]
     data = pd.DataFrame(data)
@@ -172,7 +172,7 @@ def get_ask_bid(company):
     url = (
         "https://www.leboursier.ma/api?method=getBidAsk&ISIN=" + _ISIN + "&format=json"
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     data = json.loads(request_data.content)["result"]["orderBook"]
     data = pd.DataFrame(data)
@@ -200,7 +200,7 @@ def get_balance_sheet(company, period="annual"):
     else:
         raise Exception("period should be annual or quarter")
 
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
 
@@ -248,7 +248,7 @@ def get_income_statement(company, period="annual"):
     else:
         raise Exception("period should be annual or quarter")
 
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
 
@@ -283,7 +283,7 @@ def get_cash_flow(company, period="annual"):
     else:
         raise Exception("period should be annual or quarter")
 
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
 
@@ -313,7 +313,7 @@ def get_quote_table(company):
     utils.check_company(company)
 
     url = "https://www.marketwatch.com/investing/stock/" + company + "?countrycode=ma"
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("li", {"class": "kv__item"})
@@ -333,7 +333,7 @@ def get_quote_table(company):
 def get_market_status():
 
     url = "https://www.marketwatch.com/investing/stock/iam?countryCode=ma"
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("div", {"class": "status"})
@@ -349,7 +349,7 @@ def get_company_officers(company):
     url = (
         "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("ul", {"class": "cr_data_collection cr_all_executives"})
@@ -373,7 +373,7 @@ def get_company_info(company):
         + company
         + "/company-profile?countrycode=ma"
     )
-    headers = {"User-Agent": utils.rand_agent("user-agents.txt")}
+    headers = {"User-Agent": utils.rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     soup = BeautifulSoup(request_data.text, "lxml")
     dataframe = {
