@@ -7,9 +7,6 @@ import json
 from bs4 import BeautifulSoup
 import numpy as np
 
-today = datetime.now()
-one_year_from_now = today - relativedelta(years=1)
-
 
 def get_tickers():
     for c in utils.companies:
@@ -81,13 +78,13 @@ def get_data_stock(company, start_date, end_date):
 def get_data(tickers, start_date, end_date=datetime.now()):
 
     today = datetime.now()
-    one_year_from_now = today - relativedelta(years=6)
+    six_year_from_now = today - relativedelta(years=6)
 
-    if datetime.strptime(end_date, "%Y-%m-%d") > today:
+    if isinstance(end_date, str) and datetime.strptime(end_date, "%Y-%m-%d") > today:
         raise Exception(
             "end_date is greater than {today}".format(today=today.strftime("%Y-%m-%d"))
         )
-    if datetime.strptime(start_date, "%Y-%m-%d") < one_year_from_now:
+    if datetime.strptime(start_date, "%Y-%m-%d") < six_year_from_now:
         raise Exception("start_date is limited to a maximum of six year")
 
     if isinstance(tickers, list):
