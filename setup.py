@@ -30,7 +30,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "StocksMA"},
+    package_dir={"": "."},
     packages=find_packages(exclude=("tests",)),
     python_requires=">=3.6",
     extras_require={},
