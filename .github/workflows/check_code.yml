@@ -1,4 +1,3 @@
-# .github/workflows/app.yaml
 name: PyTest
 on: push
 
@@ -33,4 +32,6 @@ jobs:
           pipenv install --deploy --dev
       - name: Run test suite
         run: |
+          pipenv run mypy $(git ls-files StocksMA '*.py')
           pipenv run pytest -v
+          
