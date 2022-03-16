@@ -13,6 +13,7 @@ lxml = "*"
 mypy = "*"
 types-requests = "*"
 types-python-dateutil = "*"
+isort = "*"
 
 [dev-packages]
 
