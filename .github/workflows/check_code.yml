@@ -2,7 +2,7 @@ name: Check Code
 on: push
 
 jobs:
-  Pytest&MyPy:
+  Pytest_MyPy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
