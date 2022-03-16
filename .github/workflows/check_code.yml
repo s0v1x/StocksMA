@@ -1,8 +1,8 @@
-name: PyTest
+name: Check Code
 on: push
 
 jobs:
-  test:
+  Pytest&MyPy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache-pipenv.outputs.cache-hit != 'true'
         run: |
-          pipenv install --deploy --dev
+          pipenv install 
       - name: Run test suite
         run: |
           pipenv run mypy $(git ls-files StocksMA '*.py')
