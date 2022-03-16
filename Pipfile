@@ -8,14 +8,14 @@ numpy = "*"
 pandas = "*"
 requests = "*"
 beautifulsoup4 = "*"
-pytest = "*"
 lxml = "*"
-mypy = "*"
 types-requests = "*"
 types-python-dateutil = "*"
-isort = "*"
 
 [dev-packages]
+isort = "*"
+mypy = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"
