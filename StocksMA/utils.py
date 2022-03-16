@@ -1,4 +1,5 @@
 import random
+import requests
 
 companies = {
     "ADH": "Douja Promotion Groupe Addoha",
@@ -85,3 +86,8 @@ def check_company(company):
             raise Exception(
                 "Ticker {company} is not found, use get_companies()".format(company=company)
         )
+
+def request(url):
+    headers = {"User-Agent": rand_agent("StocksMA/user-agents.txt")}
+    request_data = requests.get(url, headers=headers)
+    return request_data
