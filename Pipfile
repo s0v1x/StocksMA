@@ -10,6 +10,9 @@ requests = "*"
 beautifulsoup4 = "*"
 pytest = "*"
 lxml = "*"
+mypy = "*"
+types-requests = "*"
+types-python-dateutil = "*"
 
 [dev-packages]
 

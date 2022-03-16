@@ -73,21 +73,21 @@ companies = {
     "ZDJ": "Zellidja S.A.",
 }
 
-def rand_agent(fname):
+def rand_agent(fname:str) -> str:
     lines = open(fname).read().splitlines()
     return random.choice(lines)
 
-def remove_duplicates(string):
+def remove_duplicates(string:str) -> str:
     words = string.split()
     return " ".join(sorted(set(words), key=words.index))
 
-def check_company(company):
+def check_company(company:str) -> None:
     if not isinstance(company, str) or not company.upper() in companies.keys():
             raise Exception(
                 "Ticker {company} is not found, use get_companies()".format(company=company)
         )
 
-def request(url):
+def request(url:str) -> requests.models.Response:
     headers = {"User-Agent": rand_agent("StocksMA/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     return request_data
