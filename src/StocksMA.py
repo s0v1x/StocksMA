@@ -5,14 +5,17 @@ from typing import Dict, List, Tuple, Union
 
 import numpy as np
 import pandas as pd
-import src.utils as utils
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
+import src.utils as utils
+
+from . import COMPANIES
+
 
 def get_tickers() -> None:
-    for c in utils.companies:
-        print(c, "/", utils.companies[c])
+    for ticker, name in COMPANIES.items():
+        print(ticker, "/", name)
 
 
 def get_isin(company: str) -> Tuple:
@@ -20,22 +23,21 @@ def get_isin(company: str) -> Tuple:
     if not company:
         raise Exception("Company must be defined not empty")
 
-    url = "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + str(
-        company
+    url = (
+        "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
     )
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     # r.encoding='utf-8-sig'
     result = json.loads(request_data.content)["result"]
     l_result = len(result)
 
     if l_result == 0:
-        if company.upper() in utils.companies.keys():
-            return get_isin(utils.companies[company.upper()])
+        # TODO: Remove the check for company existence after using decorator
+        if company.upper() in COMPANIES.keys():
+            return get_isin(COMPANIES[company.upper()])
         else:
-            raise Exception(
-                "Company {company} cannot be found".format(company=str(company))
-            )
+            raise Exception(f"Company {company} cannot be found")
 
     elif l_result > 1:
         names = [n["name"] for n in result]
@@ -43,9 +45,7 @@ def get_isin(company: str) -> Tuple:
             return result[0]["name"], result[0]["isin"]
         else:
             raise Exception(
-                "Found severale utils.companies with the same name {company} \n {res}".format(
-                    company=company, res=names
-                )
+                f"Found several companies with the same name {company} \n {names}"
             )
     else:
         return result[0]["name"], result[0]["isin"]
@@ -56,14 +56,14 @@ T_ed = Union[str, None]
 
 def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
 
-    _NAME, _ISIN = get_isin(company)
+    name, isin = get_isin(company)
     url = (
         "https://www.leboursier.ma/api?method=getStockOHLC&ISIN="
-        + _ISIN
+        + isin
         + "&format=json"
     )
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     data = json.loads(request_data.content)
     data = pd.DataFrame(
         data["result"], columns=["Date", "Open", "High", "Low", "Close", "Volume"]
@@ -73,7 +73,7 @@ def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFram
     )
     data = data.loc[lambda x: (start_date <= x.index) & (x.index <= end_date)]
     data.set_index(
-        pd.MultiIndex.from_product([[_NAME], data.index], names=["Company", "Date"]),
+        pd.MultiIndex.from_product([[name], data.index], names=["Company", "Date"]),
         inplace=True,
     )
     data.drop(["Date"], axis=1, inplace=True)
@@ -98,11 +98,8 @@ def get_data(
         raise Exception("start_date is limited to a maximum of six year")
 
     if isinstance(tickers, list):
-        dataframes: List = []
-        for t in tickers:
-            dataframes.append(get_data_stock(t, start_date, end_date))
-        df = pd.concat(dataframes, sort=True)
-        return df
+        dataframes: List = [get_data_stock(t, start_date, end_date) for t in tickers]
+        return pd.concat(dataframes, sort=True)
     else:
         return get_data_stock(tickers, start_date, end_date)
 
@@ -111,16 +108,16 @@ def get_quick_info(company: str) -> pd.DataFrame:
 
     pattern = re.compile(r"^(MA00000)\d+$")
     if not pattern.match(company):
-        _NAME, _ISIN = get_isin(company)
+        name, isin = get_isin(company)
     else:
-        _ISIN = company
+        isin = company
     url = (
         "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
-        + _ISIN
+        + isin
         + "&format=json"
     )
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     data = json.loads(request_data.content)["result"]
     data = pd.DataFrame(data.items()).T
     cols = [
@@ -148,25 +145,25 @@ def get_quick_info(company: str) -> pd.DataFrame:
 
 def get_data_intraday(company: str) -> pd.DataFrame:
 
-    _, _ISIN = get_isin(company)
-    _DATE = (
-        get_quick_info(_ISIN)["Quotation Datetime"]
+    _, isin = get_isin(company)
+    date = (
+        get_quick_info(isin)["Quotation Datetime"]
         .to_string(index=False)
         .replace("à", "")
     )
     url = (
         "https://www.leboursier.ma/api?method=getStockIntraday&ISIN="
-        + _ISIN
+        + isin
         + "&format=json"
     )
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     data = json.loads(request_data.content)["result"][0]
     data = pd.DataFrame(data)
     data.index = pd.to_datetime(
         data.labels.apply(
             lambda x: datetime.combine(
-                datetime.strptime(_DATE, "%d/%m/%Y  %H:%M").date(),
+                datetime.strptime(date, "%d/%m/%Y  %H:%M").date(),
                 datetime.strptime(x, "%H:%M").time(),
             )
         )
@@ -178,12 +175,10 @@ def get_data_intraday(company: str) -> pd.DataFrame:
 
 def get_ask_bid(company: str) -> pd.DataFrame:
 
-    _, _ISIN = get_isin(company)
-    url = (
-        "https://www.leboursier.ma/api?method=getBidAsk&ISIN=" + _ISIN + "&format=json"
-    )
+    _, isin = get_isin(company)
+    url = f"https://www.leboursier.ma/api?method=getBidAsk&ISIN={isin}&format=json"
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     data = json.loads(request_data.content)["result"]["orderBook"]
     data = pd.DataFrame(data)
 
@@ -210,7 +205,7 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
     else:
         raise Exception("period should be annual or quarter")
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
 
     data = soup.find_all("table", {"class": "table table--overflow align--right"})
@@ -257,7 +252,7 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
     else:
         raise Exception("period should be annual or quarter")
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
 
     data = soup.find_all("table", {"class": "table table--overflow align--right"})
@@ -291,7 +286,7 @@ def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
     else:
         raise Exception("period should be annual or quarter")
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
 
     data = soup.find_all("table", {"class": "table table--overflow align--right"})
@@ -319,9 +314,9 @@ def get_quote_table(company: str) -> pd.DataFrame:
 
     utils.check_company(company)
 
-    url = "https://www.marketwatch.com/investing/stock/" + company + "?countrycode=ma"
+    url = f"https://www.marketwatch.com/investing/stock/{company}?countrycode=ma"
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("li", {"class": "kv__item"})
     dataframe: Dict = {"Key Data": [], "Value": []}
@@ -337,11 +332,11 @@ def get_quote_table(company: str) -> pd.DataFrame:
     return data
 
 
-def get_market_status() -> None:
+def get_market_status() -> str:
 
     url = "https://www.marketwatch.com/investing/stock/iam?countryCode=ma"
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("div", {"class": "status"})
     data = data[0].contents[0]
@@ -357,7 +352,7 @@ def get_company_officers(company: str) -> pd.DataFrame:
         "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
     )
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("ul", {"class": "cr_data_collection cr_all_executives"})
     dataframe: Dict = {"Name": [], "Role": []}
@@ -382,12 +377,8 @@ def get_company_info(company: str) -> pd.DataFrame:
         + "/company-profile?countrycode=ma"
     )
 
-    request_data = utils.request(url)
+    request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
-    dataframe = {
-        "Item": ["Name", "Adresse", "Phone", "Industry", "Sector", "Description"],
-        "Value": [],
-    }
     tmp = []
     tmp.append(soup.find("h4", {"class": "heading"}).contents[0])
     div_addr = soup.find_all("div", {"class": "address__line"})
@@ -403,5 +394,8 @@ def get_company_info(company: str) -> pd.DataFrame:
     tmp.append(div[0].find("span", {"class": "primary"}).contents[0])
     tmp.append(div[1].find("span", {"class": "primary"}).contents[0])
     tmp.append(soup.find("p", {"class": "description__text"}).contents[0])
-    dataframe["Value"] = tmp
+    dataframe = {
+        "Item": ["Name", "Address", "Phone", "Industry", "Sector", "Description"],
+        "Value": tmp,
+    }
     return pd.DataFrame(dataframe)
