@@ -93,6 +93,6 @@ def check_company(company: str) -> None:
 
 
 def request(url: str) -> requests.models.Response:
-    headers = {"User-Agent": rand_agent("src/StocksMA/user-agents.txt")}
+    headers = {"User-Agent": rand_agent("src/user-agents.txt")}
     request_data = requests.get(url, headers=headers)
     return request_data

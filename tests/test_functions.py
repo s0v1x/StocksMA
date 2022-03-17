@@ -1,4 +1,4 @@
-import src.StocksMA.StocksMA as stocks
+import src.StocksMA as stocks
 import pandas as pd
 
 def test_get_isin(example_company):
