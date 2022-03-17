@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple, Union
 
 import numpy as np
 import pandas as pd
-import src.StocksMA.utils as utils
+import src.utils as utils
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
