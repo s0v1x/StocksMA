@@ -1,6 +1,7 @@
-import setuptools
-from setuptools import find_packages, setup
 from pathlib import Path
+from typing import List
+
+import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -8,10 +9,24 @@ with open("README.md", "r", encoding="utf-8") as fh:
 ROOT_DIR = Path(__file__).resolve().parent
 REQUIREMENTS_DIR = ROOT_DIR / 'requirements'
 
+keywords = [
+    "pandas",
+    "stocks",
+    "finance",
+    "morocco",
+    "ma",
+    "yahoo finance",
+    "marketwatch",
+    "wsj",
+    "data",
+    "timeseries",
+]
 
-def list_reqs(fname="requirements.txt"):
+
+def list_reqs(fname: str = "requirements.txt") -> List[str]:
     with open(REQUIREMENTS_DIR / fname) as fd:
         return fd.read().splitlines()
+
 
 setuptools.setup(
     name="StocksMA",
@@ -30,11 +45,10 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    packages=find_packages(exclude=("tests",)),
+    packages=setuptools.find_packages(exclude=("tests",)),
     python_requires=">=3.6",
     extras_require={},
     include_package_data=True,
     license='MIT',
-    keywords="pandas, stocks, finance, morocco, ma, yahoo finance, marketwatch, wsj, data, timeseries",
-    
+    keywords=", ".join(keywords),
 )
