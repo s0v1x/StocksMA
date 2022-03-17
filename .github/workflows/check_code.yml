@@ -32,6 +32,6 @@ jobs:
           pipenv install --dev
       - name: Run test suite
         run: |
-          pipenv run mypy $(git ls-files src/StocksMA/'*.py')
+          pipenv run mypy $(git ls-files src/'*.py')
           pipenv run pytest -v
           
