@@ -5,10 +5,9 @@ from typing import Dict, List, Tuple, Union
 
 import numpy as np
 import pandas as pd
+import src.StocksMA.utils as utils
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
-
-import StocksMA.utils as utils
 
 
 def get_tickers() -> None:
