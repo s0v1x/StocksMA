@@ -1,5 +1,10 @@
 name: Check Code
-on: push
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   Pytest_MyPy:
@@ -20,11 +25,11 @@ jobs:
         run: |
           python -m pip install --upgrade pipenv wheel
 
-      - id: cache-pipenv
-        uses: actions/cache@v1
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+      # - id: cache-pipenv
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.local/share/virtualenvs
+      #     key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
 
       - name: Install dependencies
         if: steps.cache-pipenv.outputs.cache-hit != 'true'
@@ -34,4 +39,3 @@ jobs:
         run: |
           pipenv run mypy $(git ls-files src/'*.py')
           pipenv run pytest -v
-          
