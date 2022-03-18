@@ -2,16 +2,16 @@ import random
 
 import requests
 
-from . import COMPANIES
+from . import COMPANIES, USER_AGENTS
 
 
-def rand_agent(fname: str) -> str:
-    lines = open(fname).read().splitlines()
-    return random.choice(lines)
+def rand_agent() -> str:
+    return random.choice(USER_AGENTS)
 
 
 def remove_duplicates(string: str) -> str:
     words = string.split()
+    # HACK: remove duplicates keeping the order
     return " ".join(sorted(set(words), key=words.index))
 
 # TODO: Might be converted into a decorator
@@ -23,5 +23,5 @@ def check_company(company: str) -> None:
 
 
 def get_request(url: str) -> requests.models.Response:
-    headers = {"User-Agent": rand_agent("src/user-agents.txt")}
+    headers = {"User-Agent": rand_agent()}
     return requests.get(url, headers=headers)
