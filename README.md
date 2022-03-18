@@ -1,11 +1,8 @@
 # StocksMA
-=======
+
 <div align="center">
-  <hr />
   <p>
       <img width="500" src="stocks.png" alt="StocksMA" />
-      
-
   </p>
   <b>Creating easier access to the Moroccan stock market data</b>
   
@@ -13,19 +10,20 @@
 </div>
 
 ---
+
 <div align="center">
 
 [![Language](https://img.shields.io/badge/Language-Python-green?style)](https://github.com/s0v1x)
-[![Star Badge](https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flatcolor=BC4E99)](https://github.com/s0v1x/EULERA)
-[![GitHub license](https://img.shields.io/github/license/s0v1x/EULERA)](https://github.com/s0v1x/EULERA/blob/master/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/StocksMA)](https://pypi.org/project/StocksMA/)
+[![Star Badge](https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flatcolor=BC4E99)](https://github.com/s0v1x/StocksMA)
+[![GitHub license](https://img.shields.io/github/license/s0v1x/StocksMA)](https://github.com/s0v1x/StocksMA/blob/master/LICENSE)
 [![Check Code](https://github.com/s0v1x/StocksMA/actions/workflows/check_code.yml/badge.svg)](https://github.com/s0v1x/StocksMA/actions/workflows/check_code.yml)
 
 </div>
 
-
 ## What is StocksMA ?
 
-StocksMA is a package to facilitate access to financial and economic data of Moroccan stocks. It tries to cover potentially valuable and interesting data points. 
+StocksMA is a package to facilitate access to financial and economic data of Moroccan stocks. It tries to cover potentially valuable and interesting data points.
 
 The package include functions to extract price data from [Leboursier](https://www.leboursier.ma/), financial ratios(income statement, balance sheet, cash flow) from [MarketWatch](https://www.marketwatch.com/), and profile data from [WSJ](https://www.wsj.com)
 
@@ -33,22 +31,21 @@ The package include functions to extract price data from [Leboursier](https://ww
 
 ## Installation
 
-Python3 is required. 
-
+Python3 is required.
 
 ```bash
 $ pip install StocksMA
 ```
 
+## Usage
 
-## Import the package
+### Import the package
 
 ```python
-$ import StocksMA as stm
+>> import StocksMA as stm
 ```
 
-#### Get all availabale tickers
-
+### Get all availabale tickers
 
 ```python
 stm.get_tickers()
@@ -66,12 +63,15 @@ WAA / Wafa Assurance S.A.
 ZDJ / Zellidja S.A.
 ```
 
-#### Get price data
+---
+
+### Get price data
 
 ```python
 # Get price data of multiple companies
 stm.get_price_data(['CIH','maroc telecom', 'mng'], start_date='2020-11-14', end_date='2022-02-14')
 ```
+
 |           	|            	| Close  	| High   	| Low    	| Open   	| Volume 	|
 |-----------	|------------	|--------	|--------	|--------	|--------	|--------	|
 | **Company**   | **Date**      |        	|        	|        	|        	|        	|
@@ -82,11 +82,14 @@ stm.get_price_data(['CIH','maroc telecom', 'mng'], start_date='2020-11-14', end_
 | INVOLYS P 	| 2022-02-08 	| 131.95 	| 131.95 	| 131.95 	| 131.95 	| 5      	|
 |           	| 2022-02-09 	| 131.95 	| 131.95 	| 131.90 	| 131.95 	| 100    	|
 |           	| 2022-02-11 	| 131.90 	| 131.90 	| 131.00 	| 131.00 	| 4      	|
-<p>[840 rows x 5 columns]</p>
 
+[840 rows x 5 columns]
+
+---
+
+### Get price data of single company
 
 ```python
-# Get price data of single company
 stm.get_price_data('involys', start_date='2020-11-14', end_date='2022-02-14')
 ```
 
@@ -99,9 +102,12 @@ stm.get_price_data('involys', start_date='2020-11-14', end_date='2022-02-14')
 |           	| ...        	| ...    	| ...    	| ...    	| ...    	| ...    	|
 |           	| 2022-02-09 	| 131.95 	| 131.95 	| 131.90 	| 131.95 	| 100    	|
 |           	| 2022-02-11 	| 131.00 	| 131.90 	| 131.00 	| 131.90 	| 4      	|
-<p>[253 rows x 5 columns]</p>
 
-#### Get quick information about the company
+[253 rows x 5 columns]
+
+---
+
+### Get quick information about the company
 
 ```python
 stm.get_quick_info('involys')
@@ -111,7 +117,9 @@ stm.get_quick_info('involys')
 |---	|-----------	|---------	|--------------	|------------------	|---------	|----------------	|-------------	|--------------------	|----------------	|--------	|------------------	|--------	|---------	|---------	|---------	|
 | 1 	| INVOLYS P 	| INVOLYS 	| MA0000011579 	| 382716           	| 109.950 	| 109.95         	| 42079624.20 	| 18/03/2022 à 15:16 	| 0.00           	| 0.00   	| 5387             	| 49     	| 109.400 	| 109.400 	| 109.950 	|
 
-#### Get intraday price data
+---
+
+### Get intraday price data
 
 ```python
 stm.get_data_intraday('CIH')
@@ -138,7 +146,9 @@ stm.get_data_intraday('CIH')
 | 2022-03-18 15:19:00 	| 131.25 	|
 | 2022-03-18 15:30:00 	| 131.40 	|
 
-#### Get Ask Bid data
+---
+
+### Get Ask Bid data
 
 ```python
 stm.get_ask_bid('CIH')
@@ -157,12 +167,15 @@ stm.get_ask_bid('CIH')
 | 8 	| 330.0    	| 274    	| 359.0    	| 59     	| 3        	| 1        	|
 | 9 	| 321.5    	| 300    	| 359.4    	| 20     	| 1        	| 1        	|
 
-#### Get balance sheet
+---
+
+### Get balance sheet
 
 ```python
 # Annual balance sheet
 stm.get_balance_sheet('ATW', period='annualy')
 ```
+
 |                                    	|                                     	| 2017   	| 2018    	| 2019    	| 2020    	| 2021      |
 |------------------------------------	|-------------------------------------	|---------	|---------	|---------	|---------	|---------	|
 |                                    	| **Item**                              |         	|         	|         	|         	|         	|
@@ -177,6 +190,7 @@ stm.get_balance_sheet('ATW', period='annualy')
 |                                    	| Accumulated Minority Interest       	| 6.44B   	| 5.95B   	| 6.3B    	| 6.49B   	| 7.34B   	|
 |                                    	| Total Equity                        	| 46.06B  	| 50.47B  	| 53.93B  	| 54.29B  	| 59.79B  	|
 |                                    	| Liabilities & Shareholders' Equity  	| 471.47B 	| 509.93B 	| 532.6B  	| 568.11B 	| 596.33B 	|
+
 [74 rows x 5 columns]
 
 
@@ -200,7 +214,9 @@ stm.get_balance_sheet('ATW', period='quarter')
 |                                     	| Total Equity                        	| 56B         	| 58.29B      	| 54.29B      	| 59.79B      	| 54.45B      	|
 |                                     	| Liabilities & Shareholders' Equity  	| 579.79B     	| 586.09B     	| 568.11B     	| 596.33B     	| 562.95B     	|
 
-#### Get income statement
+---
+
+### Get income statement
 
 ```python
 # Annual income statement
@@ -241,7 +257,9 @@ stm.get_income_statement('IAM', period='quarter')
 | EBITDA Growth                       	| -           	| -30.48%     	| 46.52%      	| -3.07%      	| 3.38%       	|
 | EBITDA Margin                       	| -           	| -           	| -           	| -           	| 53.76%      	|
 
-#### Get cash flow
+---
+
+### Get cash flow
 
 ```python
 # Annual cash flow
