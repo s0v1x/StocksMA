@@ -18,11 +18,10 @@ def get_tickers() -> None:
         print(ticker, "/", name)
 
 
-@utils.check_company_existence
 def get_isin(company: str) -> Tuple:
 
     if not company:
-        raise Exception("Company must be defined not empty")
+        raise ValueError("Company must be defined not empty")
 
     url = (
         "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
@@ -88,11 +87,11 @@ def get_data(
     six_year_from_now: datetime = today - relativedelta(years=6)
 
     if datetime.strptime(end_date, "%Y-%m-%d") > today:
-        raise Exception(
+        raise ValueError(
             "end_date is greater than {today}".format(today=today.strftime("%Y-%m-%d"))
         )
     if datetime.strptime(start_date, "%Y-%m-%d") < six_year_from_now:
-        raise Exception("start_date is limited to a maximum of six year")
+        raise ValueError("start_date is limited to a maximum of six year")
 
     if isinstance(tickers, list):
         dataframes: List = [get_data_stock(t, start_date, end_date) for t in tickers]
@@ -200,7 +199,7 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
         )
         cols = ["Item Item", "5- qtr trend"]
     else:
-        raise Exception("period should be annual or quarter")
+        raise ValueError("period should be annual or quarter")
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
@@ -247,7 +246,7 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
         )
         cols = ["5- qtr trend"]
     else:
-        raise Exception("period should be annual or quarter")
+        raise ValueError("period should be annual or quarter")
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
@@ -281,7 +280,7 @@ def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
         )
         cols = ["Item Item", "5- qtr trend"]
     else:
-        raise Exception("period should be annual or quarter")
+        raise ValueError("period should be annual or quarter")
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
