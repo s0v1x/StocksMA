@@ -1,7 +1,7 @@
 from requests.models import Response
 
-import src.StocksMA as Stocks
-import src.utils as utils
+import StocksMA.StocksMA as Stocks
+import StocksMA.utils as utils
 
 
 def mock_get_isin_request(*args, **kwargs) -> Response:

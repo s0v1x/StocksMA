@@ -8,7 +8,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
-import src.utils as utils
+import StocksMA.utils as utils
 
 from . import COMPANIES
 
