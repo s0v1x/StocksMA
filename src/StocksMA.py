@@ -48,7 +48,6 @@ def get_isin(company: str) -> Tuple:
     else:
         return result[0]["name"], result[0]["isin"]
 
-
 T_ed = Union[str, None]
 
 
