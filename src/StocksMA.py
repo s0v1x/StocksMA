@@ -18,6 +18,7 @@ def get_tickers() -> None:
         print(ticker, "/", name)
 
 
+@utils.check_company_existence
 def get_isin(company: str) -> Tuple:
 
     if not company:
@@ -30,17 +31,14 @@ def get_isin(company: str) -> Tuple:
     request_data = utils.get_request(url)
     # r.encoding='utf-8-sig'
     result = json.loads(request_data.content)["result"]
-    l_result = len(result)
+    len_result = len(result)
 
-    if l_result == 0:
-        # TODO: Remove the check for company existence after using decorator
-        if company.upper() in COMPANIES.keys():
-            return get_isin(COMPANIES[company.upper()])
-        else:
-            raise Exception(f"Company {company} cannot be found")
+    if len_result == 0:
+        raise Exception(f"Company {company} cannot be found")
 
-    elif l_result > 1:
+    elif len_result > 1:
         names = [n["name"] for n in result]
+        # TODO: add code to select the right company (in case of multiple results)
         if company in names:
             return result[0]["name"], result[0]["isin"]
         else:
@@ -185,9 +183,9 @@ def get_ask_bid(company: str) -> pd.DataFrame:
     return data
 
 
+@utils.check_company_existence
 def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
 
-    utils.check_company(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -232,9 +230,9 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
     return data
 
 
+@utils.check_company_existence
 def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
 
-    utils.check_company(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -266,9 +264,9 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
     return data
 
 
+@utils.check_company_existence
 def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
 
-    utils.check_company(company)
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -310,9 +308,8 @@ def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
     return data
 
 
+@utils.check_company_existence
 def get_quote_table(company: str) -> pd.DataFrame:
-
-    utils.check_company(company)
 
     url = f"https://www.marketwatch.com/investing/stock/{company}?countrycode=ma"
 
@@ -344,12 +341,13 @@ def get_market_status() -> str:
     return data
 
 
+@utils.check_company_existence
 def get_company_officers(company: str) -> pd.DataFrame:
 
-    utils.check_company(company)
-
     url = (
-        "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
+        "https://www.wsj.com/market-data/quotes/MA/XCAS/"
+        + company
+        + "/company-people"
     )
 
     request_data = utils.get_request(url)
@@ -368,9 +366,9 @@ def get_company_officers(company: str) -> pd.DataFrame:
     return data
 
 
+@utils.check_company_existence
 def get_company_info(company: str) -> pd.DataFrame:
 
-    utils.check_company(company)
     url = (
         "https://www.marketwatch.com/investing/stock/"
         + company
