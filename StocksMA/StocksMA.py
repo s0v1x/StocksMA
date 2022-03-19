@@ -34,7 +34,7 @@ def get_isin(company: str) -> Tuple:
         if company.upper() in utils.COMPANIES.keys(): 
             return get_isin(utils.COMPANIES[company.upper()])
         else:
-        raise Exception(f"Company {company} cannot be found")
+            raise Exception(f"Company {company} cannot be found")
 
     elif len_result > 1:
         names = [n["name"] for n in result]
@@ -386,7 +386,6 @@ def get_company_info(company: str) -> pd.DataFrame:
         .contents[0]
     )
     div = soup.find_all("li", {"class": "kv__item w100"})
-    print(div)
     tmp.append(div[0].find("span", {"class": "primary"}).contents[0])
     tmp.append(div[1].find("span", {"class": "primary"}).contents[0])
     tmp.append(soup.find("p", {"class": "description__text"}).contents[0])
