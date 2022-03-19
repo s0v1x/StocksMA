@@ -10,11 +10,10 @@ from dateutil.relativedelta import relativedelta
 
 import StocksMA.utils as utils
 
-from . import COMPANIES
 
 
 def get_tickers() -> None:
-    for ticker, name in COMPANIES.items():
+    for ticker, name in utils.COMPANIES.items():
         print(ticker, "/", name)
 
 
