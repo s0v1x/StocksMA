@@ -31,6 +31,9 @@ def get_isin(company: str) -> Tuple:
     len_result = len(result)
 
     if len_result == 0:
+        if company.upper() in utils.COMPANIES.keys(): 
+            return get_isin(utils.COMPANIES[company.upper()])
+        else:
         raise Exception(f"Company {company} cannot be found")
 
     elif len_result > 1:
