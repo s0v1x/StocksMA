@@ -319,7 +319,7 @@ def get_quote_table(company: str) -> pd.DataFrame:
     dataframe: Dict = {"Key Data": [], "Value": []}
     for li in data:
         dataframe["Key Data"].append(li.find("small", {"class": "label"}).contents[0])
-        content = li.find("span", {"class": "primary "})
+        content = li.find("span", {"class": "primary"})
         if content is None:
             dataframe["Value"].append(np.nan)
         else:
