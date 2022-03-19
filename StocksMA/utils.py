@@ -3,7 +3,6 @@ from functools import wraps
 
 import requests
 
-
 COMPANIES = {
     "ADH": "Douja Promotion Groupe Addoha",
     "ADI": "Alliances Developpement Immobilier S.A.",
@@ -1078,6 +1077,7 @@ USER_AGENTS = [
     "Mozilla/5.0 (iPhone; CPU iPhone OS 8_4 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) GSA/7.0.55539 Mobile/12H143 Safari/600.1.4",
 ]
 
+
 def rand_agent() -> str:
     return random.choice(USER_AGENTS)
 
@@ -1102,13 +1102,14 @@ def check_company_existence(func):
         Exception: The exception is raised when the company is not found in
                 the COMPAINES dict.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         company = args[0]
         if not isinstance(company, str) or company.upper() not in COMPANIES.keys():
-            raise Exception(f"Ticker {company} is not found, use get_companies() to get a list of available companies")
+            raise Exception(
+                f"Ticker {company} is not found, use get_companies() to get a list of available companies"
+            )
         return func(*args, **kwargs)
 
     return wrapper
-
-

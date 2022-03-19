@@ -1,18 +1,17 @@
+import configparser
 from pathlib import Path
 from typing import List
 
 import setuptools
 
-import configparser
-
 config = configparser.ConfigParser()
-config.read('Pipfile')
+config.read("Pipfile")
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 ROOT_DIR = Path(__file__).resolve().parent
-REQUIREMENTS_DIR = ROOT_DIR / 'requirements'
+REQUIREMENTS_DIR = ROOT_DIR / "requirements"
 
 keywords = [
     "pandas",
@@ -26,7 +25,6 @@ keywords = [
     "data",
     "timeseries",
 ]
-
 
 
 setuptools.setup(
@@ -48,9 +46,9 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(exclude=("tests",)),
     python_requires=">=3.6",
-    install_requires=list(dict(config.items('packages')).keys()),
+    install_requires=list(dict(config.items("packages")).keys()),
     extras_require={},
     include_package_data=True,
-    license='MIT',
+    license="MIT",
     keywords=", ".join(keywords),
 )

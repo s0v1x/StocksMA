@@ -11,7 +11,6 @@ from dateutil.relativedelta import relativedelta
 import StocksMA.utils as utils
 
 
-
 def get_tickers() -> None:
     for ticker, name in utils.COMPANIES.items():
         print(ticker, "/", name)
@@ -45,6 +44,7 @@ def get_isin(company: str) -> Tuple:
             )
     else:
         return result[0]["name"], result[0]["isin"]
+
 
 T_ed = Union[str, None]
 
@@ -342,9 +342,7 @@ def get_market_status() -> str:
 def get_company_officers(company: str) -> pd.DataFrame:
 
     url = (
-        "https://www.wsj.com/market-data/quotes/MA/XCAS/"
-        + company
-        + "/company-people"
+        "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
     )
 
     request_data = utils.get_request(url)
