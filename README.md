@@ -2,7 +2,7 @@
 
 <div align="center">
   <p>
-      <img width="500" src="https://i.ibb.co/4fCd0sS/stocks.png" alt="StocksMA" onerror="this.onerror=null;this.src='stocks.png';"/>
+      <a href="https://pypi.org/project/StocksMA/"><img width="500" src="https://i.ibb.co/4fCd0sS/stocks.png" alt="StocksMA" onerror="this.onerror=null;this.src='stocks.png';"/></a>
   </p>
   <b>Creating easier access to the Moroccan stock market data</b>
   
