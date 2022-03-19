@@ -145,7 +145,7 @@ def get_data_intraday(company: str) -> pd.DataFrame:
 
     _, isin = get_isin(company)
     date = (
-        get_quick_info(isin)["Quotation Datetime"]
+        get_session_info(isin)["Quotation Datetime"]
         .to_string(index=False)
         .replace("à", "")
     )
