@@ -3,6 +3,11 @@ from typing import List
 
 import setuptools
 
+import configparser
+
+config = configparser.ConfigParser()
+config.read('Pipfile')
+
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
@@ -23,17 +28,13 @@ keywords = [
 ]
 
 
-def list_reqs(fname: str = "requirements.txt") -> List[str]:
-    with open(REQUIREMENTS_DIR / fname) as fd:
-        return fd.read().splitlines()
-
 
 setuptools.setup(
     name="StocksMA",
-    version="0.0.2",
+    version="0.0.1",
     author="sovix",
     author_email="sed.labiad@gmail.com",
-    description="Retrieve data related to moroccan stocks from diffrent sources",
+    description="Retrieve data related to Moroccan stocks from diffrent sources",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/s0v1x/StocksMA",
@@ -47,6 +48,7 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(exclude=("tests",)),
     python_requires=">=3.6",
+    install_requires=list(dict(config.items('packages')).keys()),
     extras_require={},
     include_package_data=True,
     license='MIT',
