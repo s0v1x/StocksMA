@@ -30,7 +30,7 @@ def list_reqs(fname: str = "requirements.txt") -> List[str]:
 
 setuptools.setup(
     name="StocksMA",
-    version="0.0.1",
+    version="0.0.2",
     author="sovix",
     author_email="sed.labiad@gmail.com",
     description="Retrieve data related to moroccan stocks from diffrent sources",
