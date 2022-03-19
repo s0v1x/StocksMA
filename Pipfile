@@ -17,6 +17,7 @@ isort = "*"
 mypy = "*"
 pytest = "*"
 black = "*"
+twine = "*"
 
 [requires]
 python_version = "3.8"
