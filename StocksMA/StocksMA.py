@@ -102,7 +102,7 @@ def get_price_data(
         return get_data_stock(tickers, start_date, end_date)
 
 
-def get_quick_info(company: str) -> pd.DataFrame:
+def get_session_info(company: str) -> pd.DataFrame:
 
     pattern = re.compile(r"^(MA00000)\d+$")
     if not pattern.match(company):
