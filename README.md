@@ -1,8 +1,6 @@
-# StocksMA
-
 <div align="center">
   <p>
-      <a href="https://pypi.org/project/StocksMA/"><img width="500" src="https://i.ibb.co/4fCd0sS/stocks.png" alt="StocksMA" onerror="this.onerror=null;this.src='stocks.png';"/></a>
+      <a href="https://pypi.org/project/StocksMA/"><img width="500" src="https://i.ibb.co/D73mr0j/stocks.png" alt="StocksMA" onerror="this.onerror=null;this.src='stocks.png';"/></a>
   </p>
   <b>Creating easier access to the Moroccan stock market data</b>
   
@@ -39,6 +37,28 @@ $ pip install StocksMA
 
 ## Usage
 
+  - [Import the package](#import-the-package)
+  - [Get all availabale tickers](#get-all-availabale-tickers)
+  - [Get price data](#get-price-data)
+    - [Get price data of multiple companies](#get-price-data)
+    - [Get price data of single company](#get-price-data)
+  - [Get session information](#get-session-information)
+  - [Get intraday price data](#get-intraday-price-data)
+  - [Get Ask Bid data](#get-ask-bid-data)
+  - [Get balance sheet](#get-balance-sheet)
+    - [Annual balance sheet](#get-balance-sheet)
+    - [Quarter balance sheet](#get-balance-sheet)
+  - [Get income statement](#get-income-statement)
+    - [Annual income statement](#get-income-statement)
+    - [Quarter income statement](#get-income-statement)
+  - [Get cash flow](#get-cash-flow)
+    - [Annual cash flow](#get-cash-flow)
+    - [Quarter cash flow](#get-cash-flow)
+  - [Get quote table](#get-quote-table)
+  - [Get market status](#get-market-status)
+  - [Get company officers](#get-company-officers)
+  - [Get company information](#get-company-information)
+  
 ### Import the package
 
 ```python
@@ -65,16 +85,16 @@ ZDJ / Zellidja S.A.
 
 ---
 
-### Get price data
+### Get price data 
 
 ```python
 # Get price data of multiple companies
-stm.get_price_data(['CIH','maroc telecom', 'mng'], start_date='2020-11-14', end_date='2022-02-14')
+stm.get_price_data(['CIH','maroc telecom', 'involys'], start_date='2020-11-14', end_date='2022-02-14')
 ```
 
 |           	|            	| Close  	| High   	| Low    	| Open   	| Volume 	|
 |-----------	|------------	|--------	|--------	|--------	|--------	|--------	|
-| **Company**   | **Date**      |        	|        	|        	|        	|        	|
+| **Company** | **Date**    |        	|        	|        	|        	|        	|
 | CIH P     	| 2020-11-16 	| 248.15 	| 248.15 	| 248.00 	| 248.00 	| 8      	|
 |           	| 2020-11-17 	| 250.00 	| 250.00 	| 248.00 	| 248.10 	| 220    	|
 |           	| 2020-11-19 	| 245.20 	| 248.00 	| 245.10 	| 248.00 	| 133    	|
@@ -85,11 +105,9 @@ stm.get_price_data(['CIH','maroc telecom', 'mng'], start_date='2020-11-14', end_
 
 [840 rows x 5 columns]
 
----
-
-### Get price data of single company
 
 ```python
+# Get price data of single company
 stm.get_price_data('involys', start_date='2020-11-14', end_date='2022-02-14')
 ```
 
@@ -107,10 +125,10 @@ stm.get_price_data('involys', start_date='2020-11-14', end_date='2022-02-14')
 
 ---
 
-### Get quick information about the company
+### Get session information
 
 ```python
-stm.get_quick_info('involys')
+stm.get_session_info('involys')
 ```
 
 |   	| Name      	| Name_2  	| ISIN         	| Number of Shares 	| Close   	| Previous Close 	| Market Cap  	| Quotation Datetime 	|  Change Volume 	| Change 	| Volume in Shares 	| Volume 	| Open    	| Low     	| High    	|
@@ -173,7 +191,7 @@ stm.get_ask_bid('CIH')
 
 ```python
 # Annual balance sheet
-stm.get_balance_sheet('ATW', period='annualy')
+stm.get_balance_sheet('ATW', period='annual')
 ```
 
 |                                    	|                                     	| 2017   	| 2018    	| 2019    	| 2020    	| 2021      |
@@ -213,6 +231,8 @@ stm.get_balance_sheet('ATW', period='quarter')
 |                                     	| Accumulated Minority Interest       	| 6.88B       	| 7.13B       	| 6.49B       	| 7.34B       	| 6.69B       	|
 |                                     	| Total Equity                        	| 56B         	| 58.29B      	| 54.29B      	| 59.79B      	| 54.45B      	|
 |                                     	| Liabilities & Shareholders' Equity  	| 579.79B     	| 586.09B     	| 568.11B     	| 596.33B     	| 562.95B     	|
+
+[74 rows x 5 columns]
 
 ---
 
@@ -265,3 +285,139 @@ stm.get_income_statement('IAM', period='quarter')
 # Annual cash flow
 stm.get_cash_flow('IAM', period='annual')
 ```
+|                      	|                                        	| 2017    	| 2018    	| 2019    	| 2020    	| 2021    	|
+|----------------------	|----------------------------------------	|---------	|---------	|---------	|---------	|---------	|
+|                      	| **Item**                                |         	|         	|         	|         	|         	|
+| Operating Activities 	| Net Income before Extraordinaries      	| 10.31B  	| 11.05B  	| 8.23B   	| 12.02B  	| 11.57B  	|
+|                      	| Net Income Growth                      	| -       	| 7.20%   	| -25.52% 	| 46.01%  	| -3.70%  	|
+|                      	| Depreciation, Depletion & Amortization 	| 6.61B   	| 6.82B   	| 7.42B   	| 7.51B   	| 7.06B   	|
+|                      	| ...                                    	| ...     	| ...     	| ...     	| ...     	| ...     	|
+|                      	| Net Operating Cash Flow                	| 14.13B  	| 13.95B  	| 14.81B  	| 10.48B  	| 12.87B  	|
+|                      	| Net Operating Cash Flow Growth         	| -       	| -1.32%  	| 6.22%   	| -29.28% 	| 22.80%  	|
+|                      	| Net Operating Cash Flow / Sales        	| 40.42%  	| 38.71%  	| 40.57%  	| 28.49%  	| 35.95%  	|
+| Investing Activities 	| Capital Expenditures                   	| (8.37B) 	| (8.08B) 	| (7.95B) 	| (4.14B) 	| (5.29B) 	|
+|                      	| Capital Expenditures Growth            	| -       	| 3.52%   	| 1.56%   	| 47.91%  	| -27.75% 	|
+|                      	| Capital Expenditures / Sales           	| -23.94% 	| -22.41% 	| -21.77% 	| -11.26% 	| -14.78% 	|
+|                      	| ...                                    	| ...     	| ...     	| ...     	| ...     	| ...     	|
+|                      	| Net Investing Cash Flow                	| (8.07B) 	| (8.37B) 	| (8.83B) 	| (4.23B) 	| (5.31B) 	|
+|                      	| Net Investing Cash Flow Growth         	| -       	| -3.77%  	| -5.42%  	| 52.03%  	| -25.42% 	|
+|                      	| Net Investing Cash Flow / Sales        	| -23.07% 	| -23.23% 	| -24.17% 	| -11.51% 	| -14.83% 	|
+| Financing Activities 	| Cash Dividends Paid - Total            	| (5.6B)  	| (5.73B) 	| (6B)    	| (4.87B) 	| (3.53B) 	|
+|                      	| Common Dividends                       	| (5.6B)  	| (5.73B) 	| (6B)    	| (4.87B) 	| (3.53B) 	|
+|                      	| Preferred Dividends                    	| -       	| -       	| -       	| -       	| -       	|
+|                      	| ...                                    	| ...     	| ...     	| ...     	| ...     	| ...     	|
+|                      	| Free Cash Flow                         	| 5.76B   	| 5.87B   	| 6.87B   	| 6.34B   	| 7.58B   	|
+|                      	| Free Cash Flow Growth                  	| -       	| 1.89%   	| 16.91%  	| -7.72%  	| 19.57%  	|
+|                      	| Free Cash Flow Yield                   	| -       	| -       	| -       	| -       	| 3.30    	|
+
+```python
+# Quarter cash flow
+stm.get_cash_flow('IAM', period='quarter')
+```
+
+|                      	|                                        	| 31-Dec-2019 	| 30-Jun-2020 	| 31-Dec-2020 	| 30-Jun-2021 	| 31-Dec-2021 	|
+|----------------------	|----------------------------------------	|-------------	|-------------	|-------------	|-------------	|-------------	|
+|                      	| **Item**                                |             	|             	|             	|             	|             	|
+| Operating Activities 	| Net Income before Extraordinaries      	| 2.37B       	| 5.84B       	| 6.18B       	| 5.56B       	| 6.02B       	|
+|                      	| Net Income Growth                      	| -           	| 146.35%     	| 5.93%       	| -10.11%     	| 8.26%       	|
+|                      	| Depreciation, Depletion & Amortization 	| 3.81B       	| (759M)      	| 8.27B       	| 3.81B       	| 3.25B       	|
+|                      	| ...                                    	| ...         	| ...         	| ...         	| ...         	| ...         	|
+|                      	| Net Operating Cash Flow                	| 8.95B       	| 1.86B       	| 8.62B       	| 5.81B       	| 7.05B       	|
+|                      	| Net Operating Cash Flow Growth         	| -           	| -79.27%     	| 364.44%     	| -32.56%     	| 21.31%      	|
+|                      	| Net Operating Cash Flow / Sales        	| 47.94%      	| 10.13%      	| 46.73%      	| 32.69%      	| 39.16%      	|
+| Investing Activities 	| Capital Expenditures                   	| (3.73B)     	| (2.29B)     	| (1.85B)     	| (2.74B)     	| (2.55B)     	|
+|                      	| Capital Expenditures Growth            	| -           	| 38.69%      	| 18.93%      	| -47.57%     	| 6.65%       	|
+|                      	| Capital Expenditures / Sales           	| -19.98%     	| -12.48%     	| -10.05%     	| -15.39%     	| -14.18%     	|
+|                      	| ...                                    	| ...         	| ...         	| ...         	| ...         	| ...         	|
+|                      	| Net Investing Cash Flow                	| (3.56B)     	| (2.4B)      	| (1.84B)     	| (2.76B)     	| (2.55B)     	|
+|                      	| Net Investing Cash Flow Growth         	| -           	| 32.71%      	| 23.40%      	| -50.11%     	| 7.37%       	|
+|                      	| Net Investing Cash Flow / Sales        	| -19.08%     	| -13.08%     	| -9.95%      	| -15.50%     	| -14.18%     	|
+| Financing Activities 	| Cash Dividends Paid - Total            	| (271M)      	| -           	| (4.87B)     	| -           	| (3.53B)     	|
+|                      	| Common Dividends                       	| (271M)      	| -           	| (4.87B)     	| -           	| (3.53B)     	|
+|                      	| Preferred Dividends                    	| -           	| -           	| -           	| -           	| -           	|
+|                      	| ...                                    	| ...         	| ...         	| ...         	| ...         	| ...         	|
+|                      	| Free Cash Flow                         	| 5.22B       	| (431M)      	| 6.77B       	| 3.08B       	| 4.5B        	|
+|                      	| Free Cash Flow Growth                  	| -           	| -108.25%    	| 1,669.84%   	| -54.52%     	| 46.18%      	|
+|                      	| Free Cash Flow Yield                   	| -           	| -           	| -           	| -           	| 3.30        	|
+
+---
+
+### Get quote table
+
+```python
+stm.get_quote_table('ATW')
+```
+
+|    	| Key Data           	| Value           	|
+|----	|--------------------	|-----------------	|
+| 0  	| Open               	| 473.00          	|
+| 1  	| Day Range          	| 464.00 - 473.00 	|
+| 2  	| 52 Week Range      	| N/A             	|
+| 3  	| Market Cap         	| 93.69B          	|
+| 4  	| Shares Outstanding 	| 215.14M         	|
+| 5  	| Public Float       	| 69.09M          	|
+| 6  	| Beta               	| N/A             	|
+| 7  	| Rev. per Employee  	| 1.933M          	|
+| 8  	| P/E Ratio          	| 18.04           	|
+| 9  	| EPS                	| 25.72           	|
+| 10 	| Yield              	| 3.23%           	|
+| 11 	| Dividend           	| 6.75            	|
+| 12 	| Ex-Dividend Date   	| Jul 5, 2021     	|
+| 13 	| Short Interest     	| N/A             	|
+| 14 	| % of Float Shorted 	| N/A             	|
+| 15 	| Average Volume     	| 160.21K         	|
+
+
+---
+
+### Get market status
+
+```python
+stm.get_market_status()
+```
+```bash
+Closed
+```
+
+---
+
+### Get company officers
+
+```python
+stm.get_company_officers('MNG')
+```
+
+|    	| Name                   	| Role                                              	|
+|----	|------------------------	|---------------------------------------------------	|
+| 0  	| Imad Toumi             	| Chairman & Chief Executive Officer                	|
+| 1  	| Mouna Mahfoud          	| Executive Director-Finance                        	|
+| 2  	| Naoual Zine            	| General Manager-Reminex & Projects                	|
+| 3  	| Lhou Maacha            	| Executive Director-Exploration                    	|
+| 4  	| Youssef el Hajjam      	| General Manager-Bases Metal Operations            	|
+| 5  	| Karim Khettouch        	| Director                                          	|
+| 6  	| Samir Oudghiri Idrissi 	| Director                                          	|
+| 7  	| Bassim Jaï Hokimi      	| Director                                          	|
+| 8  	| Hassan Ouriagli        	| Director                                          	|
+| 9  	| Amina Benkhadra        	| Director                                          	|
+| 10 	| Noufissa Kessar        	| Director                                          	|
+| 11 	| Mohamed Amine Afsahi   	| Executive Director-Marketing & Commercial         	|
+| 12 	| Laila Karam            	| Investor Relations Contact                        	|
+| 13 	| Zakaria Rbii           	| Executive Director-HR, Communication & Develop... 	|
+| 14 	| Frédéric Bernard Tona  	| Independent Director                              	|
+
+---
+
+### Get company information
+
+```python
+stm.get_company_info('MNG')
+```
+
+|   	| Item        	| Value                                             	|
+|---	|-------------	|---------------------------------------------------	|
+| 0 	| Name        	| Managem                                           	|
+| 1 	| Adresse     	| Twin Center, Tower A Angle Boulevards Zerktoun... 	|
+| 2 	| Phone       	| +212 522 956-565                                  	|
+| 3 	| Industry    	| General Mining                                    	|
+| 4 	| Sector      	| Basic Materials/Resources                         	|
+| 5 	| Description 	| Managem SA engages in mining and hydrometallur... 	|
