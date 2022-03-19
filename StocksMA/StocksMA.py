@@ -79,7 +79,7 @@ def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFram
     return data
 
 
-def get_data(
+def get_price_data(
     tickers: Union[str, List[str]],
     start_date: str,
     end_date: T_ed = datetime.now().strftime("%Y-%m-%d"),
