@@ -20,7 +20,20 @@ def get_tickers() -> None:
 
 
 def get_isin(company: str) -> Tuple:
+    """Get International Securities Identification Number(ISIN)
+       of Moroccan companies
 
+    Args:
+        company (str): The complete name of the company or just a part of it
+
+    Raises:
+        ValueError: Company must be defined not empty
+        Exception: Company cannot be found 
+        Exception: Found several companies with the same name
+
+    Returns:
+        Tuple: (Company name, Compny ISIN)
+    """
     if not company:
         raise ValueError("Company must be defined not empty")
 
