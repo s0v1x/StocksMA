@@ -24,7 +24,7 @@ def get_isin(company: str) -> Tuple:
        of Moroccan companies
 
     Args:
-        company (str): The complete name of the company or just a part of it
+        company (str): Company name or ticker
 
     Raises:
         ValueError: Company must be defined not empty
@@ -40,7 +40,7 @@ def get_isin(company: str) -> Tuple:
     url = (
         "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
     )
-
+    #TODO: change companies names(get them from leboursier), check if company exist in companies before making request
     request_data = utils.get_request(url)
     # r.encoding='utf-8-sig'
     result = json.loads(request_data.content)["result"]
