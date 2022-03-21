@@ -69,7 +69,16 @@ T_ed = Union[str, None]
 
 
 def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
+    """Get historical OHLCV data for single company
 
+    Args:
+        company (str): The complete name of the company or just a part of it
+        start_date (str): Starting date to pull data from
+        end_date (T_ed): Ending date
+
+    Returns:
+        pd.DataFrame: Dataframe of historical OHLCV data
+    """
     name, isin = get_isin(company)
     url = (
         "https://www.leboursier.ma/api?method=getStockOHLC&ISIN="
