@@ -302,7 +302,17 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
+    """Get income statement of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+    Raises:
+        ValueError: Period should be annual or quarter
+
+    Returns:
+        pd.DataFrame: Dataframe of income statement data
+    """
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
