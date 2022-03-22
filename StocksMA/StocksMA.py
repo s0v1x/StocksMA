@@ -401,7 +401,14 @@ def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_quote_table(company: str) -> pd.DataFrame:
+    """Get important data about a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of data about the ticker
+    """
     url = f"https://www.marketwatch.com/investing/stock/{company}?countrycode=ma"
 
     request_data = utils.get_request(url)
