@@ -475,7 +475,14 @@ def get_company_officers(company: str) -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_company_info(company: str) -> pd.DataFrame:
+    """Get information related to the company's location, adresse...
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of information related to the company (e.g. Name, Adresse, Phone...)
+    """
     url = (
         "https://www.marketwatch.com/investing/stock/"
         + company
