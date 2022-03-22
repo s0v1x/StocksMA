@@ -186,7 +186,14 @@ def get_session_info(company: str) -> pd.DataFrame:
 
 
 def get_data_intraday(company: str) -> pd.DataFrame:
+    """Get intraday price data of a given symbol
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of intraday price data
+    """
     _, isin = get_isin(company)
     date = (
         get_session_info(isin)["Quotation Datetime"]
