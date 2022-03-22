@@ -1088,6 +1088,14 @@ def rand_agent() -> str:
 
 
 def remove_duplicates(string: str) -> str:
+    """Remove duplicated words in a string
+
+    Args:
+        string (str): Names of items from income statement, balance sheet and cash flow Dataframes
+
+    Returns:
+        str: String without the duplicates
+    """
     words = string.split()
     # HACK: remove duplicates keeping the order
     return " ".join(sorted(set(words), key=words.index))
