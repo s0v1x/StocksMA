@@ -140,7 +140,14 @@ def get_price_data(
 
 
 def get_session_info(company: str) -> pd.DataFrame:
+    """Get data related to the current trading session of a given symbol
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of session data
+    """
     pattern = re.compile(r"^(MA00000)\d+$")
     if not pattern.match(company):
         name, isin = get_isin(company)
