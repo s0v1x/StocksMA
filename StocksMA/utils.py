@@ -1079,6 +1079,11 @@ USER_AGENTS = [
 
 
 def rand_agent() -> str:
+    """Select a random User-Agent from USER_AGENTS
+
+    Returns:
+        str: User-Agent string
+    """
     return random.choice(USER_AGENTS)
 
 
