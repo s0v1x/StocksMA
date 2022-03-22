@@ -1129,7 +1129,7 @@ def check_company_existence(func):
         company = args[0]
         if not isinstance(company, str) or company.upper() not in COMPANIES.keys():
             raise Exception(
-                f"Ticker {company} is not found, use get_companies() to get a list of available companies"
+                f"Ticker {company} is not found, use get_tickers() to get a list of available tickers"
             )
         return func(*args, **kwargs)
 
