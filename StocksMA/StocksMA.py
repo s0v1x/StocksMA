@@ -69,12 +69,11 @@ T_ed = Union[str, None]
 
 
 def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
-    """Get historical OHLCV data for single company
-
+    """Get historical OHLCV data for a given symbol
     Args:
-        company (str): The complete name of the company or just a part of it
-        start_date (str): Starting date to pull data from
-        end_date (T_ed): Ending date
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year 
+        end_date (T_ed): (YYYY-MM-DD) Ending date
 
     Returns:
         pd.DataFrame: Dataframe of historical OHLCV data
