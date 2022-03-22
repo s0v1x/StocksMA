@@ -29,7 +29,7 @@ keywords = [
 
 setuptools.setup(
     name="StocksMA",
-    version="0.0.1",
+    version="0.1.0",
     author="sovix",
     author_email="sed.labiad@gmail.com",
     description="Retrieve data related to Moroccan stocks from diffrent sources",
