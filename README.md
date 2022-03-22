@@ -83,12 +83,15 @@ AFM / AFMA S.A.
 WAA / Wafa Assurance S.A.
 ZDJ / Zellidja S.A.
 ```
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get price data 
 Get historical OHLCV data for a given symbol(s)
+
 **Args**:
 - **`tickers`** `Union[str, List[str]]` : List or str of companies names or ticker symbols(e.g. ['maroc telecom', 'MNG'] or 'CIH')
 - **`start_date`** `str`: `(YYYY-MM-DD)` Starting date to pull data from, limited to a maximum of six year
@@ -134,12 +137,15 @@ stm.get_price_data('involys', start_date='2020-11-14', end_date='2022-02-14')
 
 [253 rows x 5 columns]
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get session information
 Get data related to the current trading session of a given symbol
+
 **Args**:
 - **`company`** `str`: Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
@@ -155,12 +161,15 @@ stm.get_session_info('involys')
 |---	|-----------	|---------	|--------------	|------------------	|---------	|----------------	|-------------	|--------------------	|----------------	|--------	|------------------	|--------	|---------	|---------	|---------	|
 | 1 	| INVOLYS P 	| INVOLYS 	| MA0000011579 	| 382716           	| 109.950 	| 109.95         	| 42079624.20 	| 18/03/2022 à 15:16 	| 0.00           	| 0.00   	| 5387             	| 49     	| 109.400 	| 109.400 	| 109.950 	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get intraday price data
 Get intraday price data of a given symbol
+
 **Args**:
 - **`company`** `str`: Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
@@ -193,12 +202,15 @@ stm.get_data_intraday('CIH')
 | 2022-03-18 15:19:00 	| 131.25 	|
 | 2022-03-18 15:30:00 	| 131.40 	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get Ask Bid data
 Get ask bid data of a given symbol
+
 **Args**:
 - **`company`** `str`: Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
@@ -223,12 +235,15 @@ stm.get_ask_bid('CIH')
 | 8 	| 330.0    	| 274    	| 359.0    	| 59     	| 3        	| 1        	|
 | 9 	| 321.5    	| 300    	| 359.4    	| 20     	| 1        	| 1        	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get balance sheet
 Get balance sheet data of a given symbol
+
 **Args**:
 - **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 - **`frequency`** `str`: Display either quarter or annual data. Defaults to "annual".
@@ -282,12 +297,15 @@ stm.get_balance_sheet('ATW', frequency='quarter')
 
 [74 rows x 5 columns]
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get income statement
 Get income statement data of a given symbol
+
 **Args**:
 - **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 - **`frequency`** `str`: Display either quarter or annual data. Defaults to "annual".
@@ -335,12 +353,15 @@ stm.get_income_statement('IAM', frequency='quarter')
 | EBITDA Growth                       	| -           	| -30.48%     	| 46.52%      	| -3.07%      	| 3.38%       	|
 | EBITDA Margin                       	| -           	| -           	| -           	| -           	| 53.76%      	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get cash flow
 Get cash flow data of a given symbol
+
 **Args**:
 - **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 - **`frequency`** `str`: Display either quarter or annual data. Defaults to "annual".
@@ -408,12 +429,15 @@ stm.get_cash_flow('IAM', frequency='quarter')
 |                      	| Free Cash Flow Growth                  	| -           	| -108.25%    	| 1,669.84%   	| -54.52%     	| 46.18%      	|
 |                      	| Free Cash Flow Yield                   	| -           	| -           	| -           	| -           	| 3.30        	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get quote table
 Get important data about a given symbol
+
 **Args**:
 - **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 
@@ -444,7 +468,9 @@ stm.get_quote_table('ATW')
 | 14 	| % of Float Shorted 	| N/A             	|
 | 15 	| Average Volume     	| 160.21K         	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
@@ -461,12 +487,15 @@ stm.get_market_status()
 Closed
 ```
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get company officers
 Get company officers of a given symbol
+
 **Args**:
 - **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 
@@ -496,12 +525,15 @@ stm.get_company_officers('MNG')
 | 13 	| Zakaria Rbii           	| Executive Director-HR, Communication & Develop... 	|
 | 14 	| Frédéric Bernard Tona  	| Independent Director                              	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
 ### Get company information
 Get information related to the company's location, adresse...
+
 **Args**:
 - **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 
@@ -522,7 +554,9 @@ stm.get_company_info('MNG')
 | 4 	| Sector      	| Basic Materials/Resources                         	|
 | 5 	| Description 	| Managem SA engages in mining and hydrometallur... 	|
 
-<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+
 
 ---
 
