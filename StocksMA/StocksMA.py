@@ -21,10 +21,10 @@ def get_tickers() -> None:
 
 def get_isin(company: str) -> Tuple:
     """Get International Securities Identification Number(ISIN)
-       of Moroccan companies
+       of a given Moroccan company
 
     Args:
-        company (str): Company name or ticker
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
     Raises:
         ValueError: Company must be defined not empty
@@ -32,7 +32,7 @@ def get_isin(company: str) -> Tuple:
         Exception: Found several companies with the same name
 
     Returns:
-        Tuple: (Company name, Compny ISIN)
+        Tuple: (Company full name, Company ISIN)
     """
     if not company:
         raise ValueError("Company must be defined not empty")
