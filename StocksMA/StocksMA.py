@@ -445,7 +445,14 @@ def get_market_status() -> str:
 
 @utils.check_company_existence
 def get_company_officers(company: str) -> pd.DataFrame:
+    """Get company officers(Names and roles) of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of names and roles of the officers
+    """
     url = (
         "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
     )
