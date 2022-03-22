@@ -37,25 +37,26 @@ def get_isin(company: str) -> Tuple:
     if not company:
         raise ValueError("Company must be defined not empty")
 
+    if company.upper() in utils.COMPANIES.keys():
+        company = utils.COMPANIES[company.upper()][1]
     url = (
         "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
     )
-    # TODO: change companies names(get them from leboursier), check if company exist in companies before making request
     request_data = utils.get_request(url)
     # r.encoding='utf-8-sig'
     result = json.loads(request_data.content)["result"]
     len_result = len(result)
-
-    if len_result == 0:
-        if company.upper() in utils.COMPANIES.keys():
-            return get_isin(utils.COMPANIES[company.upper()])
-        else:
-            raise Exception(f"Company {company} cannot be found")
-
+    if len_result == 0 or (len_result == 1 and len(result[0]["isin"]) == 0):
+        raise Exception(
+            f"Company {company} cannot be found, use get_tickers() to get a list of available tickers"
+        )
     elif len_result > 1:
-        names = [n["name"] for n in result]
-        # TODO: add code to select the right company (in case of multiple results)
-        if company in names:
+        names = [
+            n["name"]
+            for n in result
+            if n["name"] in [t[1] for t in utils.COMPANIES.values()]
+        ]
+        if company.upper() in map(str.upper, names) or len(names) == 1:
             return result[0]["name"], result[0]["isin"]
         else:
             raise Exception(
