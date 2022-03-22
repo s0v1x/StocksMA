@@ -241,30 +241,28 @@ def get_ask_bid(company: str) -> pd.DataFrame:
     return data
 
 
-# TODO: change period arg name to frequency
-# TODO: maj P in exception
 @utils.check_company_existence
-def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
-    """Get balance sheet of a given symbol
+def get_balance_sheet(company: str, frequency: str = "annual") -> pd.DataFrame:
+    """Get balance sheet data of a given symbol
 
     Args:
         company (str): Ticker symbol(e.g. 'IAM', 'MNG')
-        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+        frequency (str, optional): Display either quarter or annual data. Defaults to "annual".
 
     Raises:
-        ValueError: Period should be annual or quarter
+        ValueError: frequency should be annual or quarter
 
     Returns:
         pd.DataFrame: Dataframe of balance sheet data
     """
-    if period == "annual":
+    if frequency == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
             + company
             + "/financials/balance-sheet?countrycode=ma"
         )
         cols = ["Item Item", "5-year trend"]
-    elif period == "quarter":
+    elif frequency == "quarter":
         url = (
             "https://www.marketwatch.com/investing/stock/"
             + company
@@ -272,7 +270,7 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
         )
         cols = ["Item Item", "5- qtr trend"]
     else:
-        raise ValueError("period should be annual or quarter")
+        raise ValueError("frequency should be annual or quarter")
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
@@ -302,26 +300,26 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
 
 
 @utils.check_company_existence
-def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
-    """Get income statement of a given symbol
+def get_income_statement(company: str, frequency: str = "annual") -> pd.DataFrame:
+    """Get income statement data of a given symbol
 
     Args:
         company (str): Ticker symbol(e.g. 'IAM', 'MNG')
-        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+        frequency (str, optional): Display either quarter or annual data. Defaults to "annual".
     Raises:
-        ValueError: Period should be annual or quarter
+        ValueError: frequency should be annual or quarter
 
     Returns:
         pd.DataFrame: Dataframe of income statement data
     """
-    if period == "annual":
+    if frequency == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
             + company
             + "/financials/income?countrycode=ma"
         )
         cols = ["5-year trend"]
-    elif period == "quarter":
+    elif frequency == "quarter":
         url = (
             "https://www.marketwatch.com/investing/stock/"
             + company
@@ -329,7 +327,7 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
         )
         cols = ["5- qtr trend"]
     else:
-        raise ValueError("period should be annual or quarter")
+        raise ValueError("frequency should be annual or quarter")
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
@@ -346,27 +344,27 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
 
 
 @utils.check_company_existence
-def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
-    """Get cash flow of a given symbol
+def get_cash_flow(company: str, frequency: str = "annual") -> pd.DataFrame:
+    """Get cash flow data of a given symbol
 
     Args:
         company (str): Ticker symbol(e.g. 'IAM', 'MNG')
-        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+        frequency (str, optional): Display either quarter or annual data. Defaults to "annual".
 
     Raises:
-        ValueError: Period should be annual or quarter
+        ValueError: frequency should be annual or quarter
 
     Returns:
         pd.DataFrame: Dataframe of cash flow data
     """
-    if period == "annual":
+    if frequency == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
             + company
             + "/financials/cash-flow?countrycode=ma"
         )
         cols = ["Item Item", "5-year trend"]
-    elif period == "quarter":
+    elif frequency == "quarter":
         url = (
             "https://www.marketwatch.com/investing/stock/"
             + company
@@ -374,7 +372,7 @@ def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
         )
         cols = ["Item Item", "5- qtr trend"]
     else:
-        raise ValueError("period should be annual or quarter")
+        raise ValueError("frequency should be annual or quarter")
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
