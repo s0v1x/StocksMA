@@ -1,21 +1,47 @@
+import pytest
 from requests.models import Response
 
 import StocksMA.StocksMA as Stocks
 import StocksMA.utils as utils
 
 
-def mock_get_isin_request(*args, **kwargs) -> Response:
-    response = Response()
-    response.status_code = 200
-    response._content = (
-        b'{"result": [{"name": "Maroc Telecom", "isin": "US0378331005"}]}'
-    )
-    return response
+@pytest.mark.parametrize(
+    "company",
+    [
+        "CIH",
+        "maroc telecom",
+        "involys",
+        "total",
+        "telecom",
+        "label",
+        "central",
+        "sothema",
+        "MNG",
+        "salaf",
+        "CIH",
+        "Auto Nejma",
+    ],
+)
+def test_get_isin_company(company) -> None:
+    obj = Stocks.get_isin(company)
+    assert len(obj[1]) != 0
+    assert isinstance(obj, tuple)
 
 
-def test_get_isin(monkeypatch) -> None:
-    monkeypatch.setattr(utils, "get_request", mock_get_isin_request)
-    assert isinstance(Stocks.get_isin("IAM"), tuple)
+@pytest.mark.parametrize(
+    "not_company",
+    [
+        "aaaaa",
+        "123",
+        "centrale",
+        "maroc",
+        "agricol" "",
+        "bank",
+    ],
+)
+@pytest.mark.xfail(raises=Exception)
+def test_get_isin_not_company(not_company) -> None:
+    Stocks.get_isin(not_company)
 
 
 def test_get_market_status() -> None:
