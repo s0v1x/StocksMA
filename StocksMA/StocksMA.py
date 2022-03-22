@@ -223,7 +223,14 @@ def get_data_intraday(company: str) -> pd.DataFrame:
 
 
 def get_ask_bid(company: str) -> pd.DataFrame:
+    """Get ask bid data of a given symbol
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of ask bid data
+    """
     _, isin = get_isin(company)
     url = f"https://www.leboursier.ma/api?method=getBidAsk&ISIN={isin}&format=json"
 
