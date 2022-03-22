@@ -1102,6 +1102,14 @@ def remove_duplicates(string: str) -> str:
 
 
 def get_request(url: str) -> requests.models.Response:
+    """Make a request 
+
+    Args:
+        url (str): Resource URL
+
+    Returns:
+        requests.models.Response: JSON or HTML Response
+    """
     headers = {"User-Agent": rand_agent()}
     return requests.get(url, headers=headers)
 
