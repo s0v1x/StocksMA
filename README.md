@@ -66,7 +66,8 @@ $ pip install StocksMA
 ```
 
 ### Get all availabale tickers
-
+Show available tickers with the full name of the company
+**Example**:
 ```python
 stm.get_tickers()
 ```
@@ -82,11 +83,21 @@ AFM / AFMA S.A.
 WAA / Wafa Assurance S.A.
 ZDJ / Zellidja S.A.
 ```
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
 
 ---
 
 ### Get price data 
+Get historical OHLCV data for a given symbol(s)
+**Args**:
+- **`tickers`** `Union[str, List[str]]` : List or str of companies names or ticker symbols(e.g. ['maroc telecom', 'MNG'] or 'CIH')
+- **`start_date`** `str`: `(YYYY-MM-DD)` Starting date to pull data from, limited to a maximum of six year
+- **`end_date`** `str`: `(YYYY-MM-DD)` Ending date. Defaults to the current local date
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of historical OHLCV data
+
+**Example**:
 ```python
 # Get price data of multiple companies
 stm.get_price_data(['CIH','maroc telecom', 'involys'], start_date='2020-11-14', end_date='2022-02-14')
@@ -123,10 +134,19 @@ stm.get_price_data('involys', start_date='2020-11-14', end_date='2022-02-14')
 
 [253 rows x 5 columns]
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get session information
+Get data related to the current trading session of a given symbol
+**Args**:
+- **`company`** `str`: Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of session data
+
+**Example**:
 ```python
 stm.get_session_info('involys')
 ```
@@ -135,10 +155,19 @@ stm.get_session_info('involys')
 |---	|-----------	|---------	|--------------	|------------------	|---------	|----------------	|-------------	|--------------------	|----------------	|--------	|------------------	|--------	|---------	|---------	|---------	|
 | 1 	| INVOLYS P 	| INVOLYS 	| MA0000011579 	| 382716           	| 109.950 	| 109.95         	| 42079624.20 	| 18/03/2022 à 15:16 	| 0.00           	| 0.00   	| 5387             	| 49     	| 109.400 	| 109.400 	| 109.950 	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get intraday price data
+Get intraday price data of a given symbol
+**Args**:
+- **`company`** `str`: Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of intraday price data
+
+**Example:**
 ```python
 stm.get_data_intraday('CIH')
 ```
@@ -164,10 +193,19 @@ stm.get_data_intraday('CIH')
 | 2022-03-18 15:19:00 	| 131.25 	|
 | 2022-03-18 15:30:00 	| 131.40 	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get Ask Bid data
+Get ask bid data of a given symbol
+**Args**:
+- **`company`** `str`: Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of ask bid data
+
+**Example:**
 ```python
 stm.get_ask_bid('CIH')
 ```
@@ -185,13 +223,23 @@ stm.get_ask_bid('CIH')
 | 8 	| 330.0    	| 274    	| 359.0    	| 59     	| 3        	| 1        	|
 | 9 	| 321.5    	| 300    	| 359.4    	| 20     	| 1        	| 1        	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get balance sheet
+Get balance sheet data of a given symbol
+**Args**:
+- **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
+- **`frequency`** `str`: Display either quarter or annual data. Defaults to "annual".
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of balance sheet data
+
+**Example:**
 ```python
 # Annual balance sheet
-stm.get_balance_sheet('ATW', period='annual')
+stm.get_balance_sheet('ATW', frequency='annual')
 ```
 
 |                                    	|                                     	| 2017   	| 2018    	| 2019    	| 2020    	| 2021      |
@@ -214,7 +262,7 @@ stm.get_balance_sheet('ATW', period='annual')
 
 ```python
 # Quarter balance sheet
-stm.get_balance_sheet('ATW', period='quarter')
+stm.get_balance_sheet('ATW', frequency='quarter')
 ```
 
 |                                     	|                                     	| 30-Jun-2021 	| 30-Sep-2021 	| 31-Dec-2020 	| 31-Dec-2021 	| 31-Mar-2021 	|
@@ -234,13 +282,23 @@ stm.get_balance_sheet('ATW', period='quarter')
 
 [74 rows x 5 columns]
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get income statement
+Get income statement data of a given symbol
+**Args**:
+- **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
+- **`frequency`** `str`: Display either quarter or annual data. Defaults to "annual".
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of income statement data
+
+**Example:**
 ```python
 # Annual income statement
-stm.get_income_statement('IAM', period='annual')
+stm.get_income_statement('IAM', frequency='annual')
 ```
 
 |**Item**                               | 2017   	| 2018   	| 2019    	| 2020    	| 2021   	|
@@ -261,7 +319,7 @@ stm.get_income_statement('IAM', period='annual')
 
 ```python
 # Quarter income statement
-stm.get_income_statement('IAM', period='quarter')
+stm.get_income_statement('IAM', frequency='quarter')
 ```
 
 |**Item**                               | 31-Dec-2019 	| 30-Jun-2020 	| 31-Dec-2020 	| 30-Jun-2021 	| 31-Dec-2021 	|
@@ -277,13 +335,23 @@ stm.get_income_statement('IAM', period='quarter')
 | EBITDA Growth                       	| -           	| -30.48%     	| 46.52%      	| -3.07%      	| 3.38%       	|
 | EBITDA Margin                       	| -           	| -           	| -           	| -           	| 53.76%      	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get cash flow
+Get cash flow data of a given symbol
+**Args**:
+- **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
+- **`frequency`** `str`: Display either quarter or annual data. Defaults to "annual".
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of cash flow data
+
+**Example:**
 ```python
 # Annual cash flow
-stm.get_cash_flow('IAM', period='annual')
+stm.get_cash_flow('IAM', frequency='annual')
 ```
 |                      	|                                        	| 2017    	| 2018    	| 2019    	| 2020    	| 2021    	|
 |----------------------	|----------------------------------------	|---------	|---------	|---------	|---------	|---------	|
@@ -312,7 +380,7 @@ stm.get_cash_flow('IAM', period='annual')
 
 ```python
 # Quarter cash flow
-stm.get_cash_flow('IAM', period='quarter')
+stm.get_cash_flow('IAM', frequency='quarter')
 ```
 
 |                      	|                                        	| 31-Dec-2019 	| 30-Jun-2020 	| 31-Dec-2020 	| 30-Jun-2021 	| 31-Dec-2021 	|
@@ -340,10 +408,19 @@ stm.get_cash_flow('IAM', period='quarter')
 |                      	| Free Cash Flow Growth                  	| -           	| -108.25%    	| 1,669.84%   	| -54.52%     	| 46.18%      	|
 |                      	| Free Cash Flow Yield                   	| -           	| -           	| -           	| -           	| 3.30        	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get quote table
+Get important data about a given symbol
+**Args**:
+- **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of data about the ticker
+
+**Example:**
 ```python
 stm.get_quote_table('ATW')
 ```
@@ -367,11 +444,16 @@ stm.get_quote_table('ATW')
 | 14 	| % of Float Shorted 	| N/A             	|
 | 15 	| Average Volume     	| 160.21K         	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
 
 ---
 
 ### Get market status
+Get status of the Moroccan market
+**Returns**:
+- **`str`**: Status of the market(Open/Closed)
 
+**Example:**
 ```python
 stm.get_market_status()
 ```
@@ -379,10 +461,19 @@ stm.get_market_status()
 Closed
 ```
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get company officers
+Get company officers of a given symbol
+**Args**:
+- **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of names and roles of the officers
+
+**Example:**
 ```python
 stm.get_company_officers('MNG')
 ```
@@ -405,10 +496,19 @@ stm.get_company_officers('MNG')
 | 13 	| Zakaria Rbii           	| Executive Director-HR, Communication & Develop... 	|
 | 14 	| Frédéric Bernard Tona  	| Independent Director                              	|
 
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
 ---
 
 ### Get company information
+Get information related to the company's location, adresse...
+**Args**:
+- **`company`** `str`: Ticker symbol(e.g. 'IAM', 'MNG')
 
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of information related to the company (e.g. Name, Adresse, Phone...)
+
+**Example:**
 ```python
 stm.get_company_info('MNG')
 ```
@@ -421,3 +521,10 @@ stm.get_company_info('MNG')
 | 3 	| Industry    	| General Mining                                    	|
 | 4 	| Sector      	| Basic Materials/Resources                         	|
 | 5 	| Description 	| Managem SA engages in mining and hydrometallur... 	|
+
+<a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a>
+
+---
+
+## License
+This project is licensed under the terms of the MIT license.
