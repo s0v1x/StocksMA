@@ -346,7 +346,18 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
+    """Get cash flow of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+
+    Raises:
+        ValueError: Period should be annual or quarter
+
+    Returns:
+        pd.DataFrame: Dataframe of cash flow data
+    """
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
