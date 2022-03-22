@@ -12,8 +12,8 @@ import StocksMA.utils as utils
 
 
 def get_tickers() -> None:
-    """Show available tickers with the complete 
-       name of the company.
+    """Show available tickers with the full 
+       name of the company
     """
     for ticker, name in utils.COMPANIES.items():
         print(ticker, "/", name)
