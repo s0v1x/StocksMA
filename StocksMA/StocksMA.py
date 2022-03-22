@@ -12,8 +12,8 @@ import StocksMA.utils as utils
 
 
 def get_tickers() -> None:
-    """Show available tickers with the full 
-       name of the company
+    """Show available tickers with the full
+    name of the company
     """
     for ticker, name in utils.COMPANIES.items():
         print(ticker, "/", name)
@@ -28,7 +28,7 @@ def get_isin(company: str) -> Tuple:
 
     Raises:
         ValueError: Company must be defined not empty
-        Exception: Company cannot be found 
+        Exception: Company cannot be found
         Exception: Found several companies with the same name
 
     Returns:
@@ -40,14 +40,14 @@ def get_isin(company: str) -> Tuple:
     url = (
         "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
     )
-    #TODO: change companies names(get them from leboursier), check if company exist in companies before making request
+    # TODO: change companies names(get them from leboursier), check if company exist in companies before making request
     request_data = utils.get_request(url)
     # r.encoding='utf-8-sig'
     result = json.loads(request_data.content)["result"]
     len_result = len(result)
 
     if len_result == 0:
-        if company.upper() in utils.COMPANIES.keys(): 
+        if company.upper() in utils.COMPANIES.keys():
             return get_isin(utils.COMPANIES[company.upper()])
         else:
             raise Exception(f"Company {company} cannot be found")
@@ -72,7 +72,7 @@ def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFram
     """Get historical OHLCV data for a given symbol
     Args:
         company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
-        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year 
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year
         end_date (T_ed): (YYYY-MM-DD) Ending date
 
     Returns:
@@ -112,7 +112,7 @@ def get_price_data(
 
     Args:
         tickers (Union[str, List[str]]): List or str of companies names or ticker symbols(e.g. ['maroc telecom', 'MNG'] or 'CIH')
-        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year 
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year
         end_date (T_ed, optional): (YYYY-MM-DD) Ending date. Defaults to the current local date
 
     Raises:
@@ -240,8 +240,9 @@ def get_ask_bid(company: str) -> pd.DataFrame:
 
     return data
 
-#TODO: change period arg name to frequency
-#TODO: maj P in exception
+
+# TODO: change period arg name to frequency
+# TODO: maj P in exception
 @utils.check_company_existence
 def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
     """Get balance sheet of a given symbol
