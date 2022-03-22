@@ -12,26 +12,42 @@ import StocksMA.utils as utils
 
 
 def get_tickers() -> None:
+    """Show available tickers with the full
+    name of the company
+    """
     for ticker, name in utils.COMPANIES.items():
         print(ticker, "/", name)
 
 
 def get_isin(company: str) -> Tuple:
+    """Get International Securities Identification Number(ISIN)
+       of a given Moroccan company
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Raises:
+        ValueError: Company must be defined not empty
+        Exception: Company cannot be found
+        Exception: Found several companies with the same name
+
+    Returns:
+        Tuple: (Company full name, Company ISIN)
+    """
     if not company:
         raise ValueError("Company must be defined not empty")
 
     url = (
         "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
     )
-
+    # TODO: change companies names(get them from leboursier), check if company exist in companies before making request
     request_data = utils.get_request(url)
     # r.encoding='utf-8-sig'
     result = json.loads(request_data.content)["result"]
     len_result = len(result)
 
     if len_result == 0:
-        if company.upper() in utils.COMPANIES.keys(): 
+        if company.upper() in utils.COMPANIES.keys():
             return get_isin(utils.COMPANIES[company.upper()])
         else:
             raise Exception(f"Company {company} cannot be found")
@@ -53,7 +69,15 @@ T_ed = Union[str, None]
 
 
 def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
+    """Get historical OHLCV data for a given symbol
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year
+        end_date (T_ed): (YYYY-MM-DD) Ending date
 
+    Returns:
+        pd.DataFrame: Dataframe of historical OHLCV data
+    """
     name, isin = get_isin(company)
     url = (
         "https://www.leboursier.ma/api?method=getStockOHLC&ISIN="
@@ -84,7 +108,20 @@ def get_price_data(
     start_date: str,
     end_date: T_ed = datetime.now().strftime("%Y-%m-%d"),
 ) -> pd.DataFrame:
+    """Get historical OHLCV data for a given symbol(s)
 
+    Args:
+        tickers (Union[str, List[str]]): List or str of companies names or ticker symbols(e.g. ['maroc telecom', 'MNG'] or 'CIH')
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year
+        end_date (T_ed, optional): (YYYY-MM-DD) Ending date. Defaults to the current local date
+
+    Raises:
+        ValueError: end_date is greater than today's date
+        ValueError: start_date is limited to a maximum of six year
+
+    Returns:
+        pd.DataFrame: Dataframe of historical OHLCV data
+    """
     today: datetime = datetime.now()
     six_year_from_now: datetime = today - relativedelta(years=6)
 
@@ -103,7 +140,14 @@ def get_price_data(
 
 
 def get_session_info(company: str) -> pd.DataFrame:
+    """Get data related to the current trading session of a given symbol
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of session data
+    """
     pattern = re.compile(r"^(MA00000)\d+$")
     if not pattern.match(company):
         name, isin = get_isin(company)
@@ -142,7 +186,14 @@ def get_session_info(company: str) -> pd.DataFrame:
 
 
 def get_data_intraday(company: str) -> pd.DataFrame:
+    """Get intraday price data of a given symbol
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of intraday price data
+    """
     _, isin = get_isin(company)
     date = (
         get_session_info(isin)["Quotation Datetime"]
@@ -172,7 +223,14 @@ def get_data_intraday(company: str) -> pd.DataFrame:
 
 
 def get_ask_bid(company: str) -> pd.DataFrame:
+    """Get ask bid data of a given symbol
 
+    Args:
+        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of ask bid data
+    """
     _, isin = get_isin(company)
     url = f"https://www.leboursier.ma/api?method=getBidAsk&ISIN={isin}&format=json"
 
@@ -183,9 +241,22 @@ def get_ask_bid(company: str) -> pd.DataFrame:
     return data
 
 
+# TODO: change period arg name to frequency
+# TODO: maj P in exception
 @utils.check_company_existence
 def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
+    """Get balance sheet of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+
+    Raises:
+        ValueError: Period should be annual or quarter
+
+    Returns:
+        pd.DataFrame: Dataframe of balance sheet data
+    """
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -232,7 +303,17 @@ def get_balance_sheet(company: str, period: str = "annual") -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
+    """Get income statement of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+    Raises:
+        ValueError: Period should be annual or quarter
+
+    Returns:
+        pd.DataFrame: Dataframe of income statement data
+    """
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -266,7 +347,18 @@ def get_income_statement(company: str, period: str = "annual") -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
+    """Get cash flow of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+        period (str, optional): Display either quarter or annual data. Defaults to "annual".
+
+    Raises:
+        ValueError: Period should be annual or quarter
+
+    Returns:
+        pd.DataFrame: Dataframe of cash flow data
+    """
     if period == "annual":
         url = (
             "https://www.marketwatch.com/investing/stock/"
@@ -310,7 +402,14 @@ def get_cash_flow(company: str, period: str = "annual") -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_quote_table(company: str) -> pd.DataFrame:
+    """Get important data about a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of data about the ticker
+    """
     url = f"https://www.marketwatch.com/investing/stock/{company}?countrycode=ma"
 
     request_data = utils.get_request(url)
@@ -330,7 +429,11 @@ def get_quote_table(company: str) -> pd.DataFrame:
 
 
 def get_market_status() -> str:
+    """Get status of the Moroccan market
 
+    Returns:
+        str: Status of the market(OPEN/CLOSED)
+    """
     url = "https://www.marketwatch.com/investing/stock/iam?countryCode=ma"
 
     request_data = utils.get_request(url)
@@ -343,7 +446,14 @@ def get_market_status() -> str:
 
 @utils.check_company_existence
 def get_company_officers(company: str) -> pd.DataFrame:
+    """Get company officers(Names and roles) of a given symbol
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of names and roles of the officers
+    """
     url = (
         "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
     )
@@ -366,7 +476,14 @@ def get_company_officers(company: str) -> pd.DataFrame:
 
 @utils.check_company_existence
 def get_company_info(company: str) -> pd.DataFrame:
+    """Get information related to the company's location, adresse...
 
+    Args:
+        company (str): Ticker symbol(e.g. 'IAM', 'MNG')
+
+    Returns:
+        pd.DataFrame: Dataframe of information related to the company (e.g. Name, Adresse, Phone...)
+    """
     url = (
         "https://www.marketwatch.com/investing/stock/"
         + company
