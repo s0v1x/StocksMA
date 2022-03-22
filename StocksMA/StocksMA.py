@@ -16,7 +16,7 @@ def get_tickers() -> None:
     name of the company
     """
     for ticker, name in utils.COMPANIES.items():
-        print(ticker, "/", name)
+        print(ticker, "/", name[0])
 
 
 def get_isin(company: str) -> Tuple:
