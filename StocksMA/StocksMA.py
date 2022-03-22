@@ -108,7 +108,20 @@ def get_price_data(
     start_date: str,
     end_date: T_ed = datetime.now().strftime("%Y-%m-%d"),
 ) -> pd.DataFrame:
+    """Get historical OHLCV data for a given symbol(s)
 
+    Args:
+        tickers (Union[str, List[str]]): List or str of companies names or ticker symbols(e.g. ['maroc telecom', 'MNG'] or 'CIH')
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of six year 
+        end_date (T_ed, optional): (YYYY-MM-DD) Ending date. Defaults to the current local date
+
+    Raises:
+        ValueError: end_date is greater than today's date
+        ValueError: start_date is limited to a maximum of six year
+
+    Returns:
+        pd.DataFrame: Dataframe of historical OHLCV data
+    """
     today: datetime = datetime.now()
     six_year_from_now: datetime = today - relativedelta(years=6)
 
