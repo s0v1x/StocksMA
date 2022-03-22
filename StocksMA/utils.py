@@ -1102,7 +1102,7 @@ def remove_duplicates(string: str) -> str:
 
 
 def get_request(url: str) -> requests.models.Response:
-    """Make a request 
+    """Make a request
 
     Args:
         url (str): Resource URL
