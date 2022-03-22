@@ -428,7 +428,11 @@ def get_quote_table(company: str) -> pd.DataFrame:
 
 
 def get_market_status() -> str:
+    """Get status of the Moroccan market
 
+    Returns:
+        str: Status of the market(OPEN/CLOSED)
+    """
     url = "https://www.marketwatch.com/investing/stock/iam?countryCode=ma"
 
     request_data = utils.get_request(url)
