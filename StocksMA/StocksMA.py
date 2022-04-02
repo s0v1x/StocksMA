@@ -510,3 +510,30 @@ def get_company_info(company: str) -> pd.DataFrame:
         "Value": tmp,
     }
     return pd.DataFrame(dataframe)
+
+
+def get_data_sectors() -> pd.DataFrame:
+    """Get price data of sectors
+
+    Returns:
+        pd.DataFrame: Dataframe of price data of sectors
+    """
+
+    url = "https://bourse.gbp.ma/bcp/indices"
+    request_data = utils.get_request(url)
+    soup = BeautifulSoup(request_data.text, "lxml")
+    data = soup.find_all(
+        "table",
+        {
+            "class": "table table-striped palmares table-condensed rwdTable streamingTable",
+            "id": "table1",
+        },
+    )
+
+    data = pd.read_html(str(data), thousands="'")[0]
+    data.drop(["Kurs", "Var (%)"], axis=1, inplace=True)
+    cols = ["Sector", "Date", "Close", "Open", "Low", "High"]
+    data.columns = cols
+    data.Date = pd.to_datetime(data.Date, format="%d.%m.%Y")
+
+    return data
