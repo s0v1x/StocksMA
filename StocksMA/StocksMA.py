@@ -537,3 +537,9 @@ def get_data_sectors() -> pd.DataFrame:
     data.Date = pd.to_datetime(data.Date, format="%d.%m.%Y")
 
     return data
+
+def get_sectors() -> None:
+    """Show available sectors
+    """
+    for sector in utils.SECTORS.keys():
+        print(sector)
