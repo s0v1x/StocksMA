@@ -9,6 +9,10 @@ from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
 import StocksMA.utils as utils
+from StocksMA.exceptions import (
+    CompanyNotFoundException,
+    MultipleCompaniesFoundException,
+)
 
 
 def get_tickers() -> None:
@@ -20,22 +24,22 @@ def get_tickers() -> None:
 
 
 def get_isin(company: str) -> Tuple:
-    """Get International Securities Identification Number(ISIN)
-       of a given Moroccan company
+    """Get International Securities Identification Number (ISIN)
+    of a given Moroccan company
 
     Args:
-        company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
+        company (str): Company name or ticker symbol (e.g. 'maroc telecom', 'MNG')
 
     Raises:
-        ValueError: Company must be defined not empty
-        Exception: Company cannot be found
-        Exception: Found several companies with the same name
+        ValueError: Company argument empty
+        CompanyNotFoundException: Company cannot be found
+        MultipleCompaniesFoundException: Found several companies with the same name
 
     Returns:
         Tuple: (Company full name, Company ISIN)
     """
     if not company:
-        raise ValueError("Company must be defined not empty")
+        raise ValueError("Company argument cannot be empty")
 
     if company.upper() in utils.COMPANIES.keys():
         company = utils.COMPANIES[company.upper()][1]
@@ -47,7 +51,7 @@ def get_isin(company: str) -> Tuple:
     result = json.loads(request_data.content)["result"]
     len_result = len(result)
     if len_result == 0 or (len_result == 1 and len(result[0]["isin"]) == 0):
-        raise Exception(
+        raise CompanyNotFoundException(
             f"Company {company} cannot be found, use get_tickers() to get a list of available tickers"
         )
     elif len_result > 1:
@@ -59,7 +63,7 @@ def get_isin(company: str) -> Tuple:
         if company.upper() in map(str.upper, names) or len(names) == 1:
             return result[0]["name"], result[0]["isin"]
         else:
-            raise Exception(
+            raise MultipleCompaniesFoundException(
                 f"Found several companies with the same name {company} \n {names}"
             )
     else:
@@ -151,7 +155,7 @@ def get_session_info(company: str) -> pd.DataFrame:
     """
     pattern = re.compile(r"^(MA00000)\d+$")
     if not pattern.match(company):
-        name, isin = get_isin(company)
+        _, isin = get_isin(company)
     else:
         isin = company
     url = (

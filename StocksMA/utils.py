@@ -2,6 +2,7 @@ import random
 from functools import wraps
 
 import requests
+from StocksMA.exceptions import CompanyNotFoundException
 
 SECTORS = {
     "AGROALIMENTAIRE/PRO": "1356458%2C102%2C608",
@@ -1146,15 +1147,14 @@ def check_company_existence(func):
     Should be used with functions that take a company as **first** argument
 
     Raises:
-        Exception: The exception is raised when the company is not found in
-                the COMPAINES dict.
+        CompanyNotFoundException: The exception is raised when the company is not found in the COMPAINES dict.
     """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         company = args[0]
         if not isinstance(company, str) or company.upper() not in COMPANIES.keys():
-            raise Exception(
+            raise CompanyNotFoundException(
                 f"Ticker {company} is not found, use get_tickers() to get a list of available tickers"
             )
         return func(*args, **kwargs)
