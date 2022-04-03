@@ -2,6 +2,7 @@ import random
 from functools import wraps
 
 import requests
+
 from StocksMA.exceptions import CompanyNotFoundException
 
 SECTORS = {

@@ -9,10 +9,7 @@ from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
 import StocksMA.utils as utils
-from StocksMA.exceptions import (
-    CompanyNotFoundException,
-    MultipleCompaniesFoundException,
-)
+from StocksMA.exceptions import CompanyNotFoundException, MultipleCompaniesFoundException
 
 
 def get_tickers() -> None:
