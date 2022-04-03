@@ -1,8 +1,6 @@
 import pytest
-from requests.models import Response
 
-import StocksMA.StocksMA as Stocks
-import StocksMA.utils as utils
+import StocksMA.StocksMA as stm
 
 
 @pytest.mark.parametrize(
@@ -23,7 +21,7 @@ import StocksMA.utils as utils
     ],
 )
 def test_get_isin_company(company) -> None:
-    obj = Stocks.get_isin(company)
+    obj = stm.get_isin(company)
     assert len(obj[1]) != 0
     assert isinstance(obj, tuple)
 
@@ -31,19 +29,20 @@ def test_get_isin_company(company) -> None:
 @pytest.mark.parametrize(
     "not_company",
     [
-        "aaaaa",
+        "",
         "123",
-        "centrale",
-        "maroc",
-        "agricol" "",
+        "aaaaa",
         "bank",
+        "maroc",
+        "agricol",
+        "centrale",
     ],
 )
 @pytest.mark.xfail(raises=Exception)
 def test_get_isin_not_company(not_company) -> None:
-    Stocks.get_isin(not_company)
+    stm.get_isin(not_company)
 
 
 def test_get_market_status() -> None:
-    stat = Stocks.get_market_status()
+    stat = stm.get_market_status()
     assert isinstance(stat, str)
