@@ -543,3 +543,42 @@ def get_sectors() -> None:
     """
     for sector in utils.SECTORS.keys():
         print(sector)
+
+def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
+    """Get historical OHLC data for a given sector
+
+    Args:
+        sector (str): Sector name(e.g. 'BANQUES', 'boissons')
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of five year
+        end_date (T_ed): (YYYY-MM-DD) Ending date
+
+    Returns:
+        pd.DataFrame: Dataframe of historical OHLC data
+    """
+    try:
+      sector = list(filter(lambda s: sector.upper() in s, utils.SECTORS.keys()))[0]
+    except IndexError:
+      raise ValueError(f"Sector {sector} cannot be found, use get_sectors() to get a list of available sectors")
+      
+    num_sector = utils.SECTORS[sector]
+    url = (
+        "https://bourse.gbp.ma/bcp/api/series?lid="
+        + num_sector
+        + "&max=1250&mode=snap&period=1d&vt=yes"
+    )
+
+    request_data = utils.get_request(url)
+    data_j = json.loads(request_data.content)
+    data = pd.DataFrame(data_j["prices"])
+    data.columns = ["Date", "Close", "High", "Low", "Open"]
+    data.index = pd.to_datetime(
+        data.Date.apply(lambda x: datetime.fromtimestamp(x / 1000.0).date())
+    )
+    data = data.loc[lambda x: (start_date <= x.index) & (x.index <= end_date)]
+    data.set_index(
+        pd.MultiIndex.from_product([[data_j['name']], data.index], names=["Sector", "Date"]),
+        inplace=True,
+    )
+    data.drop(["Date"], axis=1, inplace=True)
+
+    return data
