@@ -538,12 +538,12 @@ def get_data_sectors() -> pd.DataFrame:
 
     return data
 
+
 def get_sectors() -> None:
-    """Show available sectors
-    """
+    """Show available sectors"""
     for sector in utils.SECTORS.keys():
         print(sector)
-        
+
 
 def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
     """Get historical OHLC data for a given sector
@@ -557,10 +557,12 @@ def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFra
         pd.DataFrame: Dataframe of historical OHLC data
     """
     try:
-      sector = list(filter(lambda s: sector.upper() in s, utils.SECTORS.keys()))[0]
+        sector = list(filter(lambda s: sector.upper() in s, utils.SECTORS.keys()))[0]
     except IndexError:
-      raise ValueError(f"Sector {sector} cannot be found, use get_sectors() to get a list of available sectors")
-      
+        raise ValueError(
+            f"Sector {sector} cannot be found, use get_sectors() to get a list of available sectors"
+        )
+
     num_sector = utils.SECTORS[sector]
     url = (
         "https://bourse.gbp.ma/bcp/api/series?lid="
@@ -577,12 +579,15 @@ def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFra
     )
     data = data.loc[lambda x: (start_date <= x.index) & (x.index <= end_date)]
     data.set_index(
-        pd.MultiIndex.from_product([[data_j['name']], data.index], names=["Sector", "Date"]),
+        pd.MultiIndex.from_product(
+            [[data_j["name"]], data.index], names=["Sector", "Date"]
+        ),
         inplace=True,
     )
     data.drop(["Date"], axis=1, inplace=True)
 
     return data
+
 
 def get_data_sector(
     sectors: Union[str, List[str]],
