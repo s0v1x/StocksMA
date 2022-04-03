@@ -220,6 +220,7 @@ def get_data_intraday(company: str) -> pd.DataFrame:
         )
     ).rename("Datetime")
     data.drop("labels", axis=1, inplace=True)
+    data.columns = ['Price']
 
     return data
 
