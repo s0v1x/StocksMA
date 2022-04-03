@@ -543,6 +543,7 @@ def get_sectors() -> None:
     """
     for sector in utils.SECTORS.keys():
         print(sector)
+        
 
 def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
     """Get historical OHLC data for a given sector
@@ -582,3 +583,38 @@ def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFra
     data.drop(["Date"], axis=1, inplace=True)
 
     return data
+
+def get_data_sector(
+    sectors: Union[str, List[str]],
+    start_date: str,
+    end_date: T_ed = datetime.now().strftime("%Y-%m-%d"),
+) -> pd.DataFrame:
+    """Get historical OHLC data for a given sector(s)
+
+    Args:
+        sectors (Union[str, List[str]]): List or str of sectors names(e.g. ['hotel', 'PETROLE ET GAZ'] or 'BANQUES')
+        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of five years
+        end_date (T_ed, optional): (YYYY-MM-DD) Ending date. Defaults to the current local date
+
+    Raises:
+        ValueError: end_date is greater than today's date
+        ValueError: start_date is limited to a maximum of six year
+
+    Returns:
+        pd.DataFrame: Dataframe of historical OHLC data
+    """
+    today: datetime = datetime.now()
+    five_year_from_now: datetime = today - relativedelta(years=5)
+
+    if datetime.strptime(end_date, "%Y-%m-%d") > today:
+        raise ValueError(
+            "end_date is greater than {today}".format(today=today.strftime("%Y-%m-%d"))
+        )
+    if datetime.strptime(start_date, "%Y-%m-%d") < five_year_from_now:
+        raise ValueError("start_date is limited to a maximum of five year")
+
+    if isinstance(sectors, list):
+        dataframes: List = [get_price_sector(t, start_date, end_date) for t in sectors]
+        return pd.concat(dataframes, sort=True)
+    else:
+        return get_price_sector(sectors, start_date, end_date)
