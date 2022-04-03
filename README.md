@@ -14,7 +14,7 @@
 [![Language](https://img.shields.io/badge/Language-Python-green?style)](https://github.com/s0v1x)
 [![PyPI](https://img.shields.io/pypi/v/StocksMA)](https://pypi.org/project/StocksMA/)
 [![Star Badge](https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flatcolor=BC4E99)](https://github.com/s0v1x/StocksMA)
-[![GitHub license](https://img.shields.io/github/license/s0v1x/StocksMA)](https://github.com/s0v1x/StocksMA/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/s0v1x/StocksMA)](https://github.com/s0v1x/StocksMA/blob/main/LICENSE)
 [![Check Code](https://github.com/s0v1x/StocksMA/actions/workflows/check_code.yml/badge.svg)](https://github.com/s0v1x/StocksMA/actions/workflows/check_code.yml)
 
 </div>
