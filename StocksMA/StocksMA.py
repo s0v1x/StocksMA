@@ -618,3 +618,32 @@ def get_data_sector(
         return pd.concat(dataframes, sort=True)
     else:
         return get_price_sector(sectors, start_date, end_date)
+
+@utils.check_sector_existence
+def get_sector_intraday(sector: str) -> pd.DataFrame:
+    """Get intraday price data of a given sector
+
+    Args:
+        sector (str): Sector name(e.g. 'BANQUES', 'boissons')
+
+    Returns:
+        pd.DataFrame: Dataframe of intraday price data
+    """
+    print(sector)
+    num_sector = utils.SECTORS[sector]
+    url = (
+        "https://bourse.gbp.ma/bcp/api/series/intraday?decorator=ajax&lid="
+        + num_sector
+        + "&mode=snap&period=1m&max=1254"
+    )
+
+    request_data = utils.get_request(url)
+    data_j = json.loads(request_data.content)['data']
+    data = pd.DataFrame(data_j, columns=['Datetime', 'Price'])
+    data.index = pd.to_datetime(
+        data.Datetime.apply(lambda x: datetime.fromtimestamp(x / 1000.0))
+    )
+
+    data.drop("Datetime", axis=1, inplace=True)
+
+    return data
