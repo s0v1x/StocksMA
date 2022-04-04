@@ -4,3 +4,6 @@ class CompanyNotFoundException(Exception):
 
 class MultipleCompaniesFoundException(Exception):
     pass
+
+class SectorNotFoundException(Exception):
+    pass
