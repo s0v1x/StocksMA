@@ -43,6 +43,9 @@ $ pip install StocksMA
     - [Get price data of multiple companies](#get-price-data)
     - [Get price data of single company](#get-price-data)
   - [Get session information](#get-session-information)
+  - [Current Session performance](#get-session-performance)
+    - [Get best performers for the current session](#get-session-performance)
+    - [Get worst performers for the current session](#get-session-performance)
   - [Get intraday price data](#get-intraday-price-data)
   - [Get Ask Bid data](#get-ask-bid-data)
   - [Get balance sheet](#get-balance-sheet)
@@ -167,6 +170,71 @@ stm.get_session_info('involys')
 
 ---
 
+### Get the current session performance
+Get the current session's best performing indices
+
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of the best performing indices, their current price, and the variation of their price
+
+**Example:**
+```python
+stm.get_best_performers()
+```
+|    | Name              |   Price |   Variation |
+|---:|:------------------|--------:|------------:|
+|  0 | ATLANTASANAD P    |   126.1 |        5.97 |
+|  1 | PROMOPHARM        |  1017   |        3.99 |
+|  2 | COSUMAR           |   212.5 |        3.66 |
+|  3 | Auto Hall P       |    82   |        3.54 |
+|  4 | TAQA Morocco P    |  1050   |        2.94 |
+|  5 | Alliances P       |    59.8 |        2.75 |
+|  6 | SNEP P            |   804.8 |        2.52 |
+|  7 | Zellidja P        |    89.5 |        2.46 |
+|  8 | BCP P             |   255   |        2.41 |
+|  9 | Attijariwafa Bk N |   434   |        2.12 |
+| 10 | Sonasid P         |   745   |        1.35 |
+| 11 | Afriquia Gaz P    |  4600   |        0.66 |
+| 12 | LafargeHolcim P   |  1670   |        0.6  |
+| 13 | Managem P         |  2200   |        0.05 |
+| 14 | Lesieur Cristal   |   180   |        0    |
+
+Get the current session's worst performing indices
+
+**Returns**:
+- **`pd.DataFrame`**: Dataframe of the worst performing indices, their current price, and the variation of their price
+
+**Example:**
+```python
+stm.get_worst_performers()
+```
+
+|    | Name               |   Price |   Variation |
+|---:|:-------------------|--------:|------------:|
+|  0 | Med Paper P        |   23.51 |       -5.92 |
+|  1 | Delta Holding P    |   28.1  |       -5.55 |
+|  2 | Afric Indus.       |  345    |       -4.96 |
+|  3 | BMCI P             |  472    |       -4.84 |
+|  4 | Sanlam Maroc N     | 1402    |       -3.97 |
+|  5 | EQDOM P            | 1199    |       -3.77 |
+|  6 | SMI P              | 1450    |       -3.33 |
+|  7 | Ennakl N           |   32.49 |       -2.72 |
+|  8 | Colorado P         |   50.96 |       -2    |
+|  9 | Ste Boissons P     | 2500    |       -1.96 |
+| 10 | TotalEnergie MM P  | 1700    |       -1.9  |
+| 11 | Aradei Capital P   |  440.05 |       -1.77 |
+| 12 | Cartier Saada P    |   28    |       -1.55 |
+| 13 | TGCC P             |  135    |       -1.46 |
+| 14 | Addoha P           |    7.63 |       -1.29 |
+| 15 | Aluminium Maroc P  | 1531    |       -1.23 |
+| 16 | Central.Danone P/N |  550    |       -0.9  |
+| 17 | Risma P            |  118    |       -0.84 |
+| 18 | CTM P              |  645.1  |       -0.75 |
+| 19 | Resid Dar Saada P  |   23.8  |       -0.71 |
+| 20 | SODEP P            |  256.2  |       -0.7  |
+| 21 | Maroc Telecom      |  119    |       -0.58 |
+| 22 | BoA P              |  186    |       -0.53 |
+| 23 | INVOLYS P          |  101.6  |       -0.39 |
+| 24 | Immr Invest P      |  106.85 |       -0.14 |
 ### Get intraday price data
 Get intraday price data of a given symbol
 
