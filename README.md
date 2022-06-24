@@ -43,9 +43,9 @@ $ pip install StocksMA
     - [Get price data of multiple companies](#get-price-data)
     - [Get price data of single company](#get-price-data)
   - [Get session information](#get-session-information)
-  - [Session performance](#get-session-performance)
-    - [Get best performers for a given session](#get-session-performance)
-    - [Get worst performers for a given session](#get-session-performance)
+  - [Current Session performance](#get-session-performance)
+    - [Get best performers for the current session](#get-session-performance)
+    - [Get worst performers for the current session](#get-session-performance)
   - [Get intraday price data](#get-intraday-price-data)
   - [Get Ask Bid data](#get-ask-bid-data)
   - [Get balance sheet](#get-balance-sheet)
@@ -170,18 +170,15 @@ stm.get_session_info('involys')
 
 ---
 
-### Get session performance
-Get a session's best performing indices
-
-**Args**:
-- **`date`** `str`: Session date (e.g: 2022-6-24-13:40)
+### Get the current session performance
+Get the current session's best performing indices
 
 **Returns**:
 - **`pd.DataFrame`**: Dataframe of the best performing indices, their current price, and the variation of their price
 
 **Example:**
 ```python
-stm.get_best_performers('2022-6-24-13:40')
+stm.get_best_performers()
 ```
 |    | Name              |   Price |   Variation |
 |---:|:------------------|--------:|------------:|
@@ -201,17 +198,14 @@ stm.get_best_performers('2022-6-24-13:40')
 | 13 | Managem P         |  2200   |        0.05 |
 | 14 | Lesieur Cristal   |   180   |        0    |
 
-Get a session's worst performing indices
-
-**Args**:
-- **`date`** `str`: Session date (e.g: 2022-6-24-13:40)
+Get the current session's worst performing indices
 
 **Returns**:
 - **`pd.DataFrame`**: Dataframe of the worst performing indices, their current price, and the variation of their price
 
 **Example:**
 ```python
-stm.get_worst_performers('2022-6-24-13:40')
+stm.get_worst_performers()
 ```
 
 |    | Name               |   Price |   Variation |

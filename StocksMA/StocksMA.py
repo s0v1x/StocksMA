@@ -648,19 +648,15 @@ def get_sector_intraday(sector: str) -> pd.DataFrame:
 
     return data
 
-def get_best_performers(date: str) -> pd.DataFrame:
+def get_best_performers() -> pd.DataFrame:
     """Get best performers for a given session
-
-    Args:
-        date (str): date string e.g: 2022-6-24-13:40
 
     Returns:
         pd.DataFrame: Dataframe of the best performing indices, their current price, and their variation
     """
 
     url = (
-        "https://medias24.com/content/api?method=getBestPerformers&format=json&t="
-        + date
+        "https://medias24.com/content/api?method=getBestPerformers&format=json"
     )
     request_data = utils.get_request(url)
 
@@ -671,18 +667,14 @@ def get_best_performers(date: str) -> pd.DataFrame:
     return data
 
 
-def get_worst_performers(date: str) -> pd.DataFrame:
+def get_worst_performers() -> pd.DataFrame:
     """Get worst performers for a given session
-
-    Args:
-        date (str): date string e.g: 2022-6-24-13:40
 
     Returns:
         pd.DataFrame: Dataframe of the worst performing indices, their current price, and their variation
     """
     url = (
-        "https://medias24.com/content/api?method=getWorstPerformers&format=json&t="
-        + date
+        "https://medias24.com/content/api?method=getWorstPerformers&format=json"
     )
     request_data = utils.get_request(url)
 
