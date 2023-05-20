@@ -1,6 +1,5 @@
 import json
 import re
-import warnings
 from datetime import datetime
 from typing import Dict, List, Tuple, Union, Optional
 
@@ -10,12 +9,9 @@ from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
 import StocksMA.utils as utils
-from StocksMA.constants import SECTORS, COMPANIES
+from StocksMA.constants import COMPANIES
 from StocksMA.exceptions import CompanyNotFoundException
 
-
-# Enabling warnings
-warnings.simplefilter("always")
 
 T_ed = Union[str, None]
 
@@ -560,168 +556,6 @@ def get_company_info(company: str) -> pd.DataFrame:
         "Value": tmp,
     }
     return pd.DataFrame(dataframe)
-
-
-def get_data_sectors() -> pd.DataFrame:
-    """Get price data of sectors
-
-    Returns:
-        pd.DataFrame: Dataframe of price data of sectors
-    """
-    warnings.warn(
-        "The function's proper operation may be impeded by specific runtime errors. Nevertheless, it is anticipated that this concern will be addressed in the forthcoming release.",
-        RuntimeWarning,
-    )
-
-    url = "https://bourse.gbp.ma/bcp/indices"
-    request_data = utils.get_request(url)
-    soup = BeautifulSoup(request_data.text, "lxml")
-    data = soup.find_all(
-        "table",
-        {
-            "class": "table table-striped palmares table-condensed rwdTable streamingTable",
-            "id": "table1",
-        },
-    )
-
-    data = pd.read_html(str(data), thousands="'")[0]
-    data.drop(["Kurs", "Var (%)"], axis=1, inplace=True)
-    cols = ["Sector", "Date", "Close", "Open", "Low", "High"]
-    data.columns = cols
-    data.Date = pd.to_datetime(data.Date, format="%d.%m.%Y")
-
-    return data
-
-
-def get_sectors() -> None:
-    """Show available sectors"""
-    for sector in SECTORS.keys():
-        print(sector)
-
-
-@utils.check_sector_existence
-def get_price_sector(
-    sector: str, start_date: str, end_date: T_ed
-) -> pd.DataFrame:
-    """Get historical OHLC data for a given sector
-
-    Args:
-        sector (str): Sector name(e.g. 'BANQUES', 'boissons')
-        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of five year
-        end_date (T_ed): (YYYY-MM-DD) Ending date
-
-    Returns:
-        pd.DataFrame: Dataframe of historical OHLC data
-    """
-    warnings.warn(
-        "The function's proper operation may be impeded by specific runtime errors. Nevertheless, it is anticipated that this concern will be addressed in the forthcoming release.",
-        RuntimeWarning,
-    )
-
-    num_sector = SECTORS[sector]
-    url = (
-        "https://bourse.gbp.ma/bcp/api/series?lid="
-        + num_sector
-        + "&max=1250&mode=snap&period=1d&vt=yes"
-    )
-
-    request_data = utils.get_request(url)
-    data_j = json.loads(request_data.content)
-    data = pd.DataFrame(data_j["prices"])
-    data.columns = ["Date", "Close", "High", "Low", "Open"]
-    data.index = pd.to_datetime(
-        data.Date.apply(lambda x: datetime.fromtimestamp(x / 1000.0).date())
-    )
-    data = data.loc[lambda x: (start_date <= x.index) & (x.index <= end_date)]
-    data.set_index(
-        pd.MultiIndex.from_product(
-            [[data_j["name"]], data.index], names=["Sector", "Date"]
-        ),
-        inplace=True,
-    )
-    data.drop(["Date"], axis=1, inplace=True)
-
-    return data
-
-
-def get_data_sector(
-    sectors: Union[str, List[str]],
-    start_date: str,
-    end_date: T_ed = datetime.now().strftime("%Y-%m-%d"),
-) -> pd.DataFrame:
-    """Get historical OHLC data for a given sector(s)
-
-    Args:
-        sectors (Union[str, List[str]]): List or str of sectors names(e.g. ['hotel', 'PETROLE ET GAZ'] or 'BANQUES')
-        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of five years
-        end_date (T_ed, optional): (YYYY-MM-DD) Ending date. Defaults to the current local date
-
-    Raises:
-        ValueError: end_date is greater than today's date
-        ValueError: start_date is limited to a maximum of six year
-
-    Returns:
-        pd.DataFrame: Dataframe of historical OHLC data
-    """
-    warnings.warn(
-        "The function's proper operation may be impeded by specific runtime errors. Nevertheless, it is anticipated that this concern will be addressed in the forthcoming release.",
-        RuntimeWarning,
-    )
-
-    today: datetime = datetime.now()
-    five_year_from_now: datetime = today - relativedelta(years=5)
-
-    if datetime.strptime(end_date, "%Y-%m-%d") > today:
-        raise ValueError(
-            "end_date is greater than {today}".format(
-                today=today.strftime("%Y-%m-%d")
-            )
-        )
-    if datetime.strptime(start_date, "%Y-%m-%d") < five_year_from_now:
-        raise ValueError("start_date is limited to a maximum of five year")
-
-    if isinstance(sectors, list):
-        dataframes: List = [
-            get_price_sector(t, start_date, end_date) for t in sectors
-        ]
-        return pd.concat(dataframes, sort=True)
-    else:
-        return get_price_sector(sectors, start_date, end_date)
-
-
-@utils.check_sector_existence
-def get_sector_intraday(sector: str) -> pd.DataFrame:
-    """Get intraday price data of a given sector
-
-    Args:
-        sector (str): Sector name(e.g. 'BANQUES', 'boissons')
-
-    Returns:
-        pd.DataFrame: Dataframe of intraday price data
-    """
-    warnings.warn(
-        "The function's proper operation may be impeded by specific runtime errors. Nevertheless, it is anticipated that this concern will be addressed in the forthcoming release.",
-        RuntimeWarning,
-    )
-    print(sector)
-    num_sector = SECTORS[sector]
-    url = (
-        "https://bourse.gbp.ma/bcp/api/series/intraday?decorator=ajax&lid="
-        + num_sector
-        + "&mode=snap&period=1m&max=1254"
-    )
-
-    request_data = utils.get_request(url)
-    data_j = json.loads(request_data.content)["data"]
-    data = pd.DataFrame(data_j, columns=["Datetime", "Price"])
-    data.index = pd.to_datetime(
-        data.Datetime.apply(lambda x: datetime.fromtimestamp(x / 1000.0))
-    )
-
-    data.drop("Datetime", axis=1, inplace=True)
-
-    return data
-
 
 def get_best_performers() -> pd.DataFrame:
     """Get best performers for a given session
