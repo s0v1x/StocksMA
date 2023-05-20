@@ -68,28 +68,3 @@ def check_company_existence(func):
         return func(*args, **kwargs)
 
     return wrapper
-
-
-def check_sector_existence(func):
-    """
-    This decorator is used to check if the sector is in the list of sectors
-    Should be used with functions that take a sector as **first** argument
-
-    Raises:
-        SectorNotFoundException: The exception is raised when the sector is not found in the SECTORS dict.
-    """
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        sector = args[0]
-        try:
-            sector = list(
-                filter(lambda s: sector.upper() in s, SECTORS.keys())
-            )[0]
-            return func(sector, **kwargs)
-        except IndexError:
-            raise SectorNotFoundException(
-                f"Sector {sector} cannot be found, use get_sectors() to get a list of available sectors"
-            )
-
-    return wrapper
