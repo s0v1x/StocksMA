@@ -1,7 +1,7 @@
 import json
 import re
 from datetime import datetime
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Optional
 
 import numpy as np
 import pandas as pd
@@ -9,18 +9,46 @@ from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
 import StocksMA.utils as utils
-from StocksMA.exceptions import CompanyNotFoundException, MultipleCompaniesFoundException
+from StocksMA.constants import COMPANIES
+from StocksMA.exceptions import CompanyNotFoundException
 
 
-def get_tickers() -> None:
-    """Show available tickers with the full
-    name of the company
+T_ed = Union[str, None]
+
+
+def get_tickers(as_df: bool = False) -> Optional[pd.DataFrame]:
+    """Show available tickers with the full name of the company.
+
+    Args:
+        as_df :bool: When the input argument is True, the function will generate a DataFrame that includes
+               the list of available tickers along with the complete company name for each ticker.
+
+    Raises:
+        ValueError: The argument as_df must be a boolean value.
+
+    Returns:
+        Optional[pd.DataFrame]: A DataFrame that that includes the list of available tickers along with
+                                the complete company name for each ticker.
     """
-    for ticker, name in utils.COMPANIES.items():
-        print(ticker, "/", name[0])
+    if not isinstance(as_df, bool):
+        raise ValueError(
+            f"The argument as_df must be a boolean value of either True or False, but we received a value of type {type(as_df).__name__} instead."
+        )
+
+    if as_df:
+        return pd.DataFrame(
+            {
+                "Ticker": COMPANIES.keys(),
+                "Name": [info.name for info in COMPANIES.values()],
+            }
+        ).set_index("Ticker")
+
+    for ticker, info in COMPANIES.items():
+        print(ticker, "/", info.name)
+    return
 
 
-def get_isin(company: str) -> Tuple:
+def get_isin(company: str) -> Tuple[str, str]:
     """Get International Securities Identification Number (ISIN)
     of a given Moroccan company
 
@@ -28,49 +56,29 @@ def get_isin(company: str) -> Tuple:
         company (str): Company name or ticker symbol (e.g. 'maroc telecom', 'MNG')
 
     Raises:
-        ValueError: Company argument empty
-        CompanyNotFoundException: Company cannot be found
-        MultipleCompaniesFoundException: Found several companies with the same name
+        ValueError: Company argument is not a string.
+        CompanyNotFoundException: Company cannot be found.
 
     Returns:
         Tuple: (Company full name, Company ISIN)
     """
-    if not company:
-        raise ValueError("Company argument cannot be empty")
+    if not type(company) is str:
+        raise ValueError("Company argument must be of string data type")
 
-    if company.upper() in utils.COMPANIES.keys():
-        company = utils.COMPANIES[company.upper()][1]
-    url = (
-        "https://www.leboursier.ma/api?method=searchStock&format=json&search=" + company
+    for ticker, company_info in COMPANIES.items():
+        if (company.upper() == ticker.upper()) or (
+            company.upper() == company_info.name.upper()
+        ):
+            return company_info.name, company_info.isin
+
+    raise CompanyNotFoundException(
+        f"Company {company} cannot be found, use get_tickers() to get a list of available tickers"
     )
-    request_data = utils.get_request(url)
-    # r.encoding='utf-8-sig'
-    result = json.loads(request_data.content)["result"]
-    len_result = len(result)
-    if len_result == 0 or (len_result == 1 and len(result[0]["isin"]) == 0):
-        raise CompanyNotFoundException(
-            f"Company {company} cannot be found, use get_tickers() to get a list of available tickers"
-        )
-    elif len_result > 1:
-        names = [
-            n["name"]
-            for n in result
-            if n["name"] in [t[1] for t in utils.COMPANIES.values()]
-        ]
-        if company.upper() in map(str.upper, names) or len(names) == 1:
-            return result[0]["name"], result[0]["isin"]
-        else:
-            raise MultipleCompaniesFoundException(
-                f"Found several companies with the same name {company} \n {names}"
-            )
-    else:
-        return result[0]["name"], result[0]["isin"]
 
 
-T_ed = Union[str, None]
-
-
-def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
+def get_data_stock(
+    company: str, start_date: str, end_date: T_ed
+) -> pd.DataFrame:
     """Get historical OHLCV data for a given symbol
     Args:
         company (str): Company name or ticker symbol(e.g. 'maroc telecom', 'MNG')
@@ -82,7 +90,7 @@ def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFram
     """
     name, isin = get_isin(company)
     url = (
-        "https://www.leboursier.ma/api?method=getStockOHLC&ISIN="
+        "https://medias24.com/content/api?method=getStockOHLC&ISIN="
         + isin
         + "&format=json"
     )
@@ -90,14 +98,17 @@ def get_data_stock(company: str, start_date: str, end_date: T_ed) -> pd.DataFram
     request_data = utils.get_request(url)
     data = json.loads(request_data.content)
     data = pd.DataFrame(
-        data["result"], columns=["Date", "Open", "High", "Low", "Close", "Volume"]
+        data["result"],
+        columns=["Date", "Open", "High", "Low", "Close", "Volume"],
     )
     data.index = pd.to_datetime(
         data.Date.apply(lambda x: datetime.fromtimestamp(x / 1000.0).date())
     )
     data = data.loc[lambda x: (start_date <= x.index) & (x.index <= end_date)]
     data.set_index(
-        pd.MultiIndex.from_product([[name], data.index], names=["Company", "Date"]),
+        pd.MultiIndex.from_product(
+            [[name], data.index], names=["Company", "Date"]
+        ),
         inplace=True,
     )
     data.drop(["Date"], axis=1, inplace=True)
@@ -129,13 +140,17 @@ def get_price_data(
 
     if datetime.strptime(end_date, "%Y-%m-%d") > today:
         raise ValueError(
-            "end_date is greater than {today}".format(today=today.strftime("%Y-%m-%d"))
+            "end_date is greater than {today}".format(
+                today=today.strftime("%Y-%m-%d")
+            )
         )
     if datetime.strptime(start_date, "%Y-%m-%d") < six_year_from_now:
         raise ValueError("start_date is limited to a maximum of six year")
 
     if isinstance(tickers, list):
-        dataframes: List = [get_data_stock(t, start_date, end_date) for t in tickers]
+        dataframes: List = [
+            get_data_stock(t, start_date, end_date) for t in tickers
+        ]
         return pd.concat(dataframes, sort=True)
     else:
         return get_data_stock(tickers, start_date, end_date)
@@ -156,7 +171,7 @@ def get_session_info(company: str) -> pd.DataFrame:
     else:
         isin = company
     url = (
-        "https://www.leboursier.ma/api?method=getStockInfo&ISIN="
+        "https://medias24.com/content/api?method=getStockInfo&ISIN="
         + isin
         + "&format=json"
     )
@@ -203,7 +218,7 @@ def get_data_intraday(company: str) -> pd.DataFrame:
         .replace("à", "")
     )
     url = (
-        "https://www.leboursier.ma/api?method=getStockIntraday&ISIN="
+        "https://medias24.com/content/api?method=getStockIntraday&ISIN="
         + isin
         + "&format=json"
     )
@@ -220,7 +235,7 @@ def get_data_intraday(company: str) -> pd.DataFrame:
         )
     ).rename("Datetime")
     data.drop("labels", axis=1, inplace=True)
-    data.columns = ['Price']
+    data.columns = ["Price"]
 
     return data
 
@@ -235,7 +250,7 @@ def get_ask_bid(company: str) -> pd.DataFrame:
         pd.DataFrame: Dataframe of ask bid data
     """
     _, isin = get_isin(company)
-    url = f"https://www.leboursier.ma/api?method=getBidAsk&ISIN={isin}&format=json"
+    url = f"https://medias24.com/content/api?method=getBidAsk&ISIN={isin}&format=json"
 
     request_data = utils.get_request(url)
     data = json.loads(request_data.content)["result"]["orderBook"]
@@ -278,14 +293,18 @@ def get_balance_sheet(company: str, frequency: str = "annual") -> pd.DataFrame:
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
 
-    data = soup.find_all("table", {"class": "table table--overflow align--right"})
+    data = soup.find_all(
+        "table", {"class": "table table--overflow align--right"}
+    )
 
     tab1 = pd.read_html(str(data))[0]
     tab2 = pd.read_html(str(data))[1]
     tab1["Item Item"] = tab1["Item Item"].apply(utils.remove_duplicates)
     tab2["Item Item"] = tab2["Item Item"].apply(utils.remove_duplicates)
     tab1.set_index(
-        pd.MultiIndex.from_product([["Assets"], tab1["Item Item"]], names=["", "Item"]),
+        pd.MultiIndex.from_product(
+            [["Assets"], tab1["Item Item"]], names=["", "Item"]
+        ),
         inplace=True,
     )
     tab1.drop(cols, axis=1, inplace=True)
@@ -303,7 +322,9 @@ def get_balance_sheet(company: str, frequency: str = "annual") -> pd.DataFrame:
 
 
 @utils.check_company_existence
-def get_income_statement(company: str, frequency: str = "annual") -> pd.DataFrame:
+def get_income_statement(
+    company: str, frequency: str = "annual"
+) -> pd.DataFrame:
     """Get income statement data of a given symbol
 
     Args:
@@ -335,7 +356,9 @@ def get_income_statement(company: str, frequency: str = "annual") -> pd.DataFram
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
 
-    data = soup.find_all("table", {"class": "table table--overflow align--right"})
+    data = soup.find_all(
+        "table", {"class": "table table--overflow align--right"}
+    )
 
     data = pd.read_html(str(data))[0]
     data["Item Item"] = data["Item Item"].apply(utils.remove_duplicates)
@@ -380,9 +403,15 @@ def get_cash_flow(company: str, frequency: str = "annual") -> pd.DataFrame:
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
 
-    data = soup.find_all("table", {"class": "table table--overflow align--right"})
+    data = soup.find_all(
+        "table", {"class": "table table--overflow align--right"}
+    )
     data = pd.read_html(str(data))
-    activ = ["Operating Activities", "Investing Activities", "Financing Activities"]
+    activ = [
+        "Operating Activities",
+        "Investing Activities",
+        "Financing Activities",
+    ]
     dataframes = []
     for i in range(3):
         tab = data[i]
@@ -411,14 +440,18 @@ def get_quote_table(company: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Dataframe of data about the ticker
     """
-    url = f"https://www.marketwatch.com/investing/stock/{company}?countrycode=ma"
+    url = (
+        f"https://www.marketwatch.com/investing/stock/{company}?countrycode=ma"
+    )
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
     data = soup.find_all("li", {"class": "kv__item"})
     dataframe: Dict = {"Key Data": [], "Value": []}
     for li in data:
-        dataframe["Key Data"].append(li.find("small", {"class": "label"}).contents[0])
+        dataframe["Key Data"].append(
+            li.find("small", {"class": "label"}).contents[0]
+        )
         content = li.find("span", {"class": "primary"})
         if content is None:
             dataframe["Value"].append(np.nan)
@@ -456,12 +489,16 @@ def get_company_officers(company: str) -> pd.DataFrame:
         pd.DataFrame: Dataframe of names and roles of the officers
     """
     url = (
-        "https://www.wsj.com/market-data/quotes/MA/XCAS/" + company + "/company-people"
+        "https://www.wsj.com/market-data/quotes/MA/XCAS/"
+        + company
+        + "/company-people"
     )
 
     request_data = utils.get_request(url)
     soup = BeautifulSoup(request_data.text, "lxml")
-    data = soup.find_all("ul", {"class": "cr_data_collection cr_all_executives"})
+    data = soup.find_all(
+        "ul", {"class": "cr_data_collection cr_all_executives"}
+    )
     dataframe: Dict = {"Name": [], "Role": []}
     for i in data:
         div = i.find_all("div", {"class": "cr_data_field"})
@@ -508,145 +545,17 @@ def get_company_info(company: str) -> pd.DataFrame:
     tmp.append(div[1].find("span", {"class": "primary"}).contents[0])
     tmp.append(soup.find("p", {"class": "description__text"}).contents[0])
     dataframe = {
-        "Item": ["Name", "Address", "Phone", "Industry", "Sector", "Description"],
+        "Item": [
+            "Name",
+            "Address",
+            "Phone",
+            "Industry",
+            "Sector",
+            "Description",
+        ],
         "Value": tmp,
     }
     return pd.DataFrame(dataframe)
-
-
-def get_data_sectors() -> pd.DataFrame:
-    """Get price data of sectors
-
-    Returns:
-        pd.DataFrame: Dataframe of price data of sectors
-    """
-
-    url = "https://bourse.gbp.ma/bcp/indices"
-    request_data = utils.get_request(url)
-    soup = BeautifulSoup(request_data.text, "lxml")
-    data = soup.find_all(
-        "table",
-        {
-            "class": "table table-striped palmares table-condensed rwdTable streamingTable",
-            "id": "table1",
-        },
-    )
-
-    data = pd.read_html(str(data), thousands="'")[0]
-    data.drop(["Kurs", "Var (%)"], axis=1, inplace=True)
-    cols = ["Sector", "Date", "Close", "Open", "Low", "High"]
-    data.columns = cols
-    data.Date = pd.to_datetime(data.Date, format="%d.%m.%Y")
-
-    return data
-
-
-def get_sectors() -> None:
-    """Show available sectors"""
-    for sector in utils.SECTORS.keys():
-        print(sector)
-
-@utils.check_sector_existence
-def get_price_sector(sector: str, start_date: str, end_date: T_ed) -> pd.DataFrame:
-    """Get historical OHLC data for a given sector
-
-    Args:
-        sector (str): Sector name(e.g. 'BANQUES', 'boissons')
-        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of five year
-        end_date (T_ed): (YYYY-MM-DD) Ending date
-
-    Returns:
-        pd.DataFrame: Dataframe of historical OHLC data
-    """
-    num_sector = utils.SECTORS[sector]
-    url = (
-        "https://bourse.gbp.ma/bcp/api/series?lid="
-        + num_sector
-        + "&max=1250&mode=snap&period=1d&vt=yes"
-    )
-
-    request_data = utils.get_request(url)
-    data_j = json.loads(request_data.content)
-    data = pd.DataFrame(data_j["prices"])
-    data.columns = ["Date", "Close", "High", "Low", "Open"]
-    data.index = pd.to_datetime(
-        data.Date.apply(lambda x: datetime.fromtimestamp(x / 1000.0).date())
-    )
-    data = data.loc[lambda x: (start_date <= x.index) & (x.index <= end_date)]
-    data.set_index(
-        pd.MultiIndex.from_product(
-            [[data_j["name"]], data.index], names=["Sector", "Date"]
-        ),
-        inplace=True,
-    )
-    data.drop(["Date"], axis=1, inplace=True)
-
-    return data
-
-
-def get_data_sector(
-    sectors: Union[str, List[str]],
-    start_date: str,
-    end_date: T_ed = datetime.now().strftime("%Y-%m-%d"),
-) -> pd.DataFrame:
-    """Get historical OHLC data for a given sector(s)
-
-    Args:
-        sectors (Union[str, List[str]]): List or str of sectors names(e.g. ['hotel', 'PETROLE ET GAZ'] or 'BANQUES')
-        start_date (str): (YYYY-MM-DD) Starting date to pull data from, limited to a maximum of five years
-        end_date (T_ed, optional): (YYYY-MM-DD) Ending date. Defaults to the current local date
-
-    Raises:
-        ValueError: end_date is greater than today's date
-        ValueError: start_date is limited to a maximum of six year
-
-    Returns:
-        pd.DataFrame: Dataframe of historical OHLC data
-    """
-    today: datetime = datetime.now()
-    five_year_from_now: datetime = today - relativedelta(years=5)
-
-    if datetime.strptime(end_date, "%Y-%m-%d") > today:
-        raise ValueError(
-            "end_date is greater than {today}".format(today=today.strftime("%Y-%m-%d"))
-        )
-    if datetime.strptime(start_date, "%Y-%m-%d") < five_year_from_now:
-        raise ValueError("start_date is limited to a maximum of five year")
-
-    if isinstance(sectors, list):
-        dataframes: List = [get_price_sector(t, start_date, end_date) for t in sectors]
-        return pd.concat(dataframes, sort=True)
-    else:
-        return get_price_sector(sectors, start_date, end_date)
-
-@utils.check_sector_existence
-def get_sector_intraday(sector: str) -> pd.DataFrame:
-    """Get intraday price data of a given sector
-
-    Args:
-        sector (str): Sector name(e.g. 'BANQUES', 'boissons')
-
-    Returns:
-        pd.DataFrame: Dataframe of intraday price data
-    """
-    print(sector)
-    num_sector = utils.SECTORS[sector]
-    url = (
-        "https://bourse.gbp.ma/bcp/api/series/intraday?decorator=ajax&lid="
-        + num_sector
-        + "&mode=snap&period=1m&max=1254"
-    )
-
-    request_data = utils.get_request(url)
-    data_j = json.loads(request_data.content)['data']
-    data = pd.DataFrame(data_j, columns=['Datetime', 'Price'])
-    data.index = pd.to_datetime(
-        data.Datetime.apply(lambda x: datetime.fromtimestamp(x / 1000.0))
-    )
-
-    data.drop("Datetime", axis=1, inplace=True)
-
-    return data
 
 def get_best_performers() -> pd.DataFrame:
     """Get best performers for a given session
@@ -660,9 +569,9 @@ def get_best_performers() -> pd.DataFrame:
     )
     request_data = utils.get_request(url)
 
-    data_j = json.loads(request_data.content)['result']
+    data_j = json.loads(request_data.content)["result"]
     data = pd.DataFrame(data_j)
-    data.columns = ['Name', 'Price', 'Variation']
+    data.columns = ["Name", "Price", "Variation"]
 
     return data
 
@@ -673,13 +582,11 @@ def get_worst_performers() -> pd.DataFrame:
     Returns:
         pd.DataFrame: Dataframe of the worst performing indices, their current price, and their variation
     """
-    url = (
-        "https://medias24.com/content/api?method=getWorstPerformers&format=json"
-    )
+    url = "https://medias24.com/content/api?method=getWorstPerformers&format=json"
     request_data = utils.get_request(url)
 
-    data_j = json.loads(request_data.content)['result']
+    data_j = json.loads(request_data.content)["result"]
     data = pd.DataFrame(data_j)
-    data.columns = ['Name', 'Price', 'Variation']
+    data.columns = ["Name", "Price", "Variation"]
 
     return data

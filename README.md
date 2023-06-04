@@ -69,7 +69,13 @@ $ pip install StocksMA
 ```
 
 ### Get all availabale tickers
-Show available tickers with the full name of the company
+Display a list of available tickers along with the complete name of the company, the results can also be returned as a DataFrame.
+
+**Args**:
+
+- **as_df** :bool: When the input argument is True, the function will generate a DataFrame that includes
+               the list of available tickers along with the complete company name for each ticker.
+
 **Example**:
 ```python
 stm.get_tickers()
@@ -77,18 +83,37 @@ stm.get_tickers()
 
 ```bash
 ADH / Douja Promotion Groupe Addoha
-ADI / Alliances Developpement Immobilier S.A.
-AFI / Afric Industries S.A.
 AFM / AFMA S.A.
+AFI / Afric Industries S.A.
+GAZ / Afriquia Gaz
 .
 .
 .
-WAA / Wafa Assurance S.A.
-ZDJ / Zellidja S.A.
+AKT / AKDITAL
+DYT / DISTY TECHNOLOGIES
+TGC / TGCC S.A
+RIS / RISMA
 ```
 
-<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
+```python
+stm.get_tickers(as_df = True)
+```
 
+| Ticker   | Name                          |
+|:---------|:------------------------------|
+| ADH      | Douja Promotion Groupe Addoha |
+| AFM      | AFMA S.A.                     |
+| AFI      | Afric Industries S.A.         |
+| GAZ      | Afriquia Gaz                  |
+| AGM      | Agma S.A.                     |
+| ...      | ...                           |
+| ZDJ      | Zellidja S.A.                 |
+| AKT      | AKDITAL                       |
+| DYT      | DISTY TECHNOLOGIES            |
+| TGC      | TGCC S.A                      |
+| RIS      | RISMA                         |
+
+<div align="right"><a href="#usage" style="float: right;font-size: 12px;font-weight: bold;">Back to top</a></div>
 
 ---
 
