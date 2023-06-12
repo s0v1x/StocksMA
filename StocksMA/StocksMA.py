@@ -45,7 +45,7 @@ def get_tickers(as_df: bool = False) -> Optional[pd.DataFrame]:
 
     for ticker, info in COMPANIES.items():
         print(ticker, "/", info.name)
-    return
+    return None
 
 
 def get_isin(company: str) -> Tuple[str, str]:
